@@ -92,19 +92,24 @@ public class SuffixTree {
         markRedundants(this, new String());
     }
 
-    private void dump(String indent) {
-        for (Location l : locations) {
-            System.out.print("(" + l.document + " " + l.offset + ") ");
-        }
-        System.out.println();
-
-        children.forEach((k, v) -> {
-                System.out.print(indent + k + " -> ");
-                v.dump(indent + " ");
-            });
+    public void accept(SuffixTreeVisitor visitor) {
+        visitor.visit(this);
+        children.forEach((k, v) -> v.accept(visitor.spawn(k)));
     }
 
-    public void dump() {
-        dump(new String());
-    }
+    // private void dump(String indent) {
+    //     for (Location l : locations) {
+    //         System.out.print("(" + l.document + " " + l.offset + ") ");
+    //     }
+    //     System.out.println();
+
+    //     children.forEach((k, v) -> {
+    //             System.out.print(indent + k + " -> ");
+    //             v.dump(indent + " ");
+    //         });
+    // }
+
+    // public void dump() {
+    //     dump(new String());
+    // }
 }
