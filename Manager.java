@@ -26,18 +26,11 @@ public class Manager {
          */
         root.getChildren().forEachValue(1, v -> v.markRedundants());
 
-        // SuffixTreeIterator it =
-        //     new SuffixTreeIterator(root) ; //, 2, min_ngrams, false);
-        // for (Token token : it) {
-        //     if (token != null) {
-        //         System.out.println(token);
-        //     }
-        // }
-
+        /*
+         * Generate terms
+         */
         root.getChildren().forEach((k, v) -> {
                 v.accept(new SuffixTreeVisitor(min_ngrams, 2, false));
             });
-
-        // root.dump();
     }
 }
