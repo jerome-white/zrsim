@@ -5,7 +5,7 @@ public class StringWindow implements Iterator<String>, Iterable<String> {
     private String string;
     private int chunk;
     private int cursor;
-    
+
     public StringWindow(String string, int chunk) {
         this.string = string;
         this.chunk = chunk;
@@ -23,7 +23,7 @@ public class StringWindow implements Iterator<String>, Iterable<String> {
     public String next() {
         int start = cursor;
         cursor++;
-        
+
         return string.substring(start, start + chunk);
     }
 

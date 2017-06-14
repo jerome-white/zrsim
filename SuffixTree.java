@@ -24,7 +24,7 @@ public class SuffixTree {
     public ConcurrentLinkedQueue<Location> getLocations() {
         return locations;
     }
-    
+
     public boolean isRedundant() {
         return redundant.get();
     }
@@ -32,7 +32,7 @@ public class SuffixTree {
     public void add(CharSequence ngram, Location location) {
         Character head = ngram.charAt(0);
         children.putIfAbsent(head, new SuffixTree());
-        
+
         SuffixTree child = children.get(head);
         child.locations.add(location);
 
@@ -41,7 +41,7 @@ public class SuffixTree {
             child.add(tail, location);
         }
     }
-    
+
     public SuffixTree find(String ngram) {
         if (ngram.isEmpty()) {
             throw new java.lang.IllegalArgumentException();
@@ -55,7 +55,7 @@ public class SuffixTree {
 
         return (ngram.length() > 1) ? child.find(ngram.substring(1)) : child;
     }
-    
+
     private void markRedundants(SuffixTree root, String ngram) {
         children.forEach((k, v) -> v.markRedundants(root, ngram + k));
 
@@ -63,7 +63,7 @@ public class SuffixTree {
         StringWindow window = new StringWindow(ngram, ngram.length() - diff);
         for (String n : window) {
             int overlap = 0;
-            
+
             try {
                 SuffixTree node = root.find(n);
 
@@ -77,16 +77,16 @@ public class SuffixTree {
                         }
                     }
                 }
-        
+
                 if (overlap == node.locations.size()) {
                     node.redundant.set(true);
                 }
             }
             catch (NoSuchElementException error) {}
-            catch (IllegalArgumentException error) {}            
-        }            
+            catch (IllegalArgumentException error) {}
+        }
     }
-    
+
     public void markRedundants() {
         markRedundants(this, new String());
     }

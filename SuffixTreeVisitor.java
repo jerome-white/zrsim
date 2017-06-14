@@ -3,7 +3,7 @@ public class SuffixTreeVisitor {
     private int length;
     private boolean redundants;
     private String ngram;
-    
+
     public SuffixTreeVisitor(int length,
                              int appearances,
                              boolean redundants,
@@ -24,7 +24,7 @@ public class SuffixTreeVisitor {
 
     public SuffixTreeVisitor spawn(Character gram) {
         String ngram = new String(this.ngram + gram);
-        
+
         return new SuffixTreeVisitor(length,
                                      appearances,
                                      redundants,

@@ -10,7 +10,7 @@ public class SuffixTreeBuilder implements Runnable {
     private int n;
     private File file;
     private SuffixTree tree;
-    
+
     public SuffixTreeBuilder(SuffixTree tree, File file, int n) {
         this.file = file;
         this.n = n;
@@ -29,9 +29,9 @@ public class SuffixTreeBuilder implements Runnable {
                     break;
                 }
                 buffer.flip();
-                
+
                 tree.add(buffer, new Location(file, i));
-                
+
                 buffer.clear();
                 in.reset();
                 in.skip(1);

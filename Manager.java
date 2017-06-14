@@ -7,7 +7,7 @@ public class Manager {
         File directory = new File(args[0]);
         int min_ngrams = Integer.parseInt(args[1]);
         int max_ngrams = Integer.parseInt(args[2]);
-        
+
         SuffixTree root = new SuffixTree();
 
         /*

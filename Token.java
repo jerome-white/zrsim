@@ -14,7 +14,7 @@ public class Token {
         StringBuffer buffer = new StringBuffer();
 
         buffer.append(location.document).append(separator);
-        buffer.append(ngram).append(separator);        
+        buffer.append(ngram).append(separator);
         buffer.append(location.offset);
 
         return buffer.toString();
