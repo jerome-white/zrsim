@@ -29,7 +29,7 @@ public class Manager {
         /*
          * Generate terms
          */
-        root.getChildren().forEach((k, v) -> {
+        root.getChildren().forEach(1, (k, v) -> {
                 v.accept(new SuffixTreeVisitor(min_ngrams, 2, false));
             });
     }
