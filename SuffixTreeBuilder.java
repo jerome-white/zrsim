@@ -1,7 +1,9 @@
 import java.io.File;
+import java.io.Reader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.BufferedReader;
+import java.nio.CharBuffer;
 import java.lang.Runnable;
 
 public class SuffixTreeBuilder implements Runnable {
@@ -17,18 +19,20 @@ public class SuffixTreeBuilder implements Runnable {
 
     public void run() {
         int len;
-        char[] buffer = new char[n];
+        CharBuffer buffer = CharBuffer.allocate(n);
 
-        try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+        try (Reader in = new BufferedReader(new FileReader(file))) {
             for (int i = 0; ; i++) {
                 in.mark(n + 1);
-                len = in.read(buffer, 0, n);
+                len = in.read(buffer);
                 if (len != n) {
                     break;
                 }
-
-                tree.add(new String(buffer), new Location(file, i));
+                buffer.flip();
                 
+                tree.add(buffer, new Location(file, i));
+                
+                buffer.clear();
                 in.reset();
                 in.skip(1);
             }

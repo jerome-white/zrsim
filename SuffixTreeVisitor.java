@@ -22,11 +22,13 @@ public class SuffixTreeVisitor {
         this(0, 0, true);
     }
 
-    public SuffixTreeVisitor spawn(String ngram) {
+    public SuffixTreeVisitor spawn(Character gram) {
+        String ngram = new String(this.ngram + gram);
+        
         return new SuffixTreeVisitor(length,
                                      appearances,
                                      redundants,
-                                     this.ngram + ngram);
+                                     ngram);
     }
 
     public void visit(SuffixTree node) {

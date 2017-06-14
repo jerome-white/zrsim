@@ -1,3 +1,5 @@
+import java.lang.Character;
+import java.lang.CharSequence;
 import java.lang.IllegalArgumentException;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -5,19 +7,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SuffixTree {
-    private final int key_length = 1;
-    
     private AtomicBoolean redundant;
-    private ConcurrentHashMap<String, SuffixTree> children;
+    private ConcurrentHashMap<Character, SuffixTree> children;
     private ConcurrentLinkedQueue<Location> locations;
 
     public SuffixTree() {
         this.redundant = new AtomicBoolean(false);
-        children = new ConcurrentHashMap<String, SuffixTree>();
+        children = new ConcurrentHashMap<Character, SuffixTree>();
         locations = new ConcurrentLinkedQueue<Location>();
     }
 
-    public ConcurrentHashMap<String, SuffixTree> getChildren() {
+    public ConcurrentHashMap<Character, SuffixTree> getChildren() {
         return children;
     }
 
@@ -29,15 +29,15 @@ public class SuffixTree {
         return redundant.get();
     }
 
-    public void add(String ngram, Location location) {
-        String head = ngram.substring(0, key_length);
+    public void add(CharSequence ngram, Location location) {
+        Character head = ngram.charAt(0);
         children.putIfAbsent(head, new SuffixTree());
         
         SuffixTree child = children.get(head);
         child.locations.add(location);
 
-        if (ngram.length() > key_length) {
-            String tail = ngram.substring(key_length);
+        if (ngram.length() > 1) {
+            CharSequence tail = ngram.subSequence(1, ngram.length());
             child.add(tail, location);
         }
     }
@@ -46,15 +46,14 @@ public class SuffixTree {
         if (ngram.isEmpty()) {
             throw new java.lang.IllegalArgumentException();
         }
-        
-        String head = ngram.substring(0, key_length);
+
+        Character head = ngram.charAt(0);
         SuffixTree child = children.get(head);
         if (child == null) {
-            throw new NoSuchElementException(head);
+            throw new NoSuchElementException(head.toString());
 	}
 
-        return (ngram.length() == key_length) ?
-            child : child.find(ngram.substring(key_length));
+        return (ngram.length() > 1) ? child.find(ngram.substring(1)) : child;
     }
     
     private void markRedundants(SuffixTree root, String ngram) {
