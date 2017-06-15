@@ -18,8 +18,11 @@ public class Location implements Comparable<Location> {
         return (cmp == 0) ? Integer.compare(offset, o.offset) : cmp;
     }
 
+    public boolean aligns(Location o, int epsilon) {
+        return o.offset == offset || o.offset <= offset + epsilon;
+    }
+
     public boolean contains(Location o, int epsilon) {
-        return document.equals(o.document) &&
-            (o.offset == offset || o.offset <= offset + epsilon);
+        return document.equals(o.document) && aligns(o, epsilon);
     }
 }
