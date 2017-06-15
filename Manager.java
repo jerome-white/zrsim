@@ -42,7 +42,7 @@ public class Manager {
          */
         LOGGER.info("Terms to disk");
 
-        root.getChildren().forEach(1, (k, v) -> {
+        root.getChildren().forEachValue(1, v -> {
                 v.accept(new SuffixTreeVisitor(min_ngrams, 2, false));
             });
     }
