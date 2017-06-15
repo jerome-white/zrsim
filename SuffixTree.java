@@ -1,6 +1,9 @@
 import java.lang.Character;
 import java.lang.CharSequence;
 import java.lang.IllegalArgumentException;
+import java.util.TreeSet;
+import java.util.Iterator;
+import java.util.SortedSet;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -62,23 +65,29 @@ public class SuffixTree {
         int diff = 1;
         StringWindow window = new StringWindow(ngram, ngram.length() - diff);
         for (String n : window) {
-            int overlap = 0;
-
             try {
                 SuffixTree node = root.find(n);
 
-                for (Location theirs : node.locations) {
-                    for (Location ours : locations) {
-                        if (theirs.document.equals(ours.document) &&
-                            (theirs.offset == ours.offset ||
-                             theirs.offset == ours.offset + diff)) {
-                            overlap++;
+                SortedSet<Location> theirSortedLocations =
+                    new TreeSet<Location>(node.locations);
+                Iterator<Location> outer = theirSortedLocations.iterator();
+
+                SortedSet<Location> mySortedLocations =
+                    new TreeSet<Location>(locations);
+                Iterator<Location> inner = mySortedLocations.iterator();
+
+                while (outer.hasNext()) {
+                    Location x = outer.next();
+                    while (inner.hasNext()) {
+                        Location y = inner.next();
+                        if (y.contains(x, ngram.length() - n.length())) {
+                            outer.remove();
                             break;
                         }
                     }
                 }
 
-                if (overlap == node.locations.size()) {
+                if (theirSortedLocations.isEmpty()) {
                     node.redundant.set(true);
                 }
             }
