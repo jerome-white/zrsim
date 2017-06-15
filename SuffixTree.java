@@ -1,9 +1,6 @@
 import java.lang.Character;
 import java.lang.CharSequence;
 import java.lang.IllegalArgumentException;
-import java.util.TreeSet;
-import java.util.Iterator;
-import java.util.SortedSet;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,7 +12,7 @@ public class SuffixTree {
     private ConcurrentLinkedQueue<Location> locations;
 
     public SuffixTree() {
-        this.redundant = new AtomicBoolean(false);
+        redundant = new AtomicBoolean(false);
         children = new ConcurrentHashMap<Character, SuffixTree>();
         locations = new ConcurrentLinkedQueue<Location>();
     }
@@ -62,16 +59,15 @@ public class SuffixTree {
     private void markRedundants(SuffixTree root, String ngram) {
         children.forEach((k, v) -> v.markRedundants(root, ngram + k));
 
-        StringWindow window = new StringWindow(ngram, ngram.length() - 1);
-        for (String n : window) {
+        for (String partial : new StringWindow(ngram, ngram.length() - 1)) {
             try {
-                SuffixTree node = root.find(n);
+                SuffixTree node = root.find(partial);
                 if (node.isRedundant()) {
                     continue;
                 }
 
                 int overlap = 0;
-                int epsilon = ngram.length() - n.length();
+                int epsilon = ngram.length() - partial.length();
 
                 for (Location theirs : node.locations) {
                     for (Location ours : locations) {
