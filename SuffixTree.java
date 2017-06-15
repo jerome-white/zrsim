@@ -62,11 +62,15 @@ public class SuffixTree {
     private void markRedundants(SuffixTree root, String ngram) {
         children.forEach((k, v) -> v.markRedundants(root, ngram + k));
 
-        int diff = 1;
-        StringWindow window = new StringWindow(ngram, ngram.length() - diff);
+        StringWindow window = new StringWindow(ngram, ngram.length() - 1);
         for (String n : window) {
             try {
                 SuffixTree node = root.find(n);
+                if (n.isRedundant()) {
+                    continue;
+                }
+
+                int epsilon = ngram.length() - n.length();
 
                 SortedSet<Location> theirSortedLocations =
                     new TreeSet<Location>(node.locations);
@@ -80,7 +84,7 @@ public class SuffixTree {
                     Location x = outer.next();
                     while (inner.hasNext()) {
                         Location y = inner.next();
-                        if (y.contains(x, ngram.length() - n.length())) {
+                        if (y.contains(x, epsilon)) {
                             outer.remove();
                             break;
                         }
