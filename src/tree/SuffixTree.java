@@ -1,3 +1,5 @@
+package tree;
+
 import java.lang.Character;
 import java.lang.CharSequence;
 import java.lang.IllegalArgumentException;
@@ -5,6 +7,9 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import util.Location;
+import visitor.SuffixTreeVisitor;
 
 public class SuffixTree {
     private AtomicBoolean redundant;

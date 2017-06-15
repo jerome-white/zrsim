@@ -1,3 +1,5 @@
+package tree;
+
 import java.io.File;
 import java.io.Reader;
 import java.io.FileReader;
@@ -5,6 +7,8 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.nio.CharBuffer;
 import java.lang.Runnable;
+
+import util.Location;
 
 public class DocumentParser implements Runnable {
     private int n;

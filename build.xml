@@ -1,0 +1,46 @@
+<project name="ZR Simulator" default="dist" basedir=".">
+  <property name="src" location="src"/>
+  <property name="lib" location="lib"/>
+  <property name="var" location="log"/>
+  <property name="build" location="bin"/>
+
+  <path id="default_classpath">
+    <pathelement path="${java.class.path}"/>
+    <pathelement path="${build}"/>
+    <fileset dir="${lib}">
+      <include name="hamcrest-core-1.3.jar"/>
+      <include name="junit-4.12.jar"/>
+    </fileset>
+  </path>
+
+  <target name="init">
+    <tstamp/>
+    <mkdir dir="${var}"/>
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="clean" description="clean up" >
+    <delete dir="${var}"/>
+    <delete dir="${build}"/>
+  </target>
+
+  <target name="compile" depends="init" >
+    <javac srcdir="${src}"
+	   destdir="${build}"
+	   classpathref="default_classpath"
+	   includeantruntime="false">
+      <compilerarg value="-Xlint:unchecked"/>
+    </javac>
+  </target>
+
+  <target name="run" depends="compile">
+    <java fork="true" classname="test.system.Manager">
+      <jvmarg value="-ea"/>
+      <classpath refid="default_classpath"/>
+      <arg value="${corpus}"/>
+      <arg value="${min_ngrams}"/>
+      <arg value="${max_ngrams}"/>
+      <arg value="${output}"/>
+    </java>
+  </target>
+</project>

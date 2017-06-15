@@ -1,3 +1,5 @@
+package util;
+
 import java.lang.Comparable;
 
 public class Location implements Comparable<Location> {

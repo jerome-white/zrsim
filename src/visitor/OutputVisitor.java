@@ -1,4 +1,10 @@
+package visitor;
+
 import java.io.PrintStream;
+
+import util.Token;
+import util.Location;
+import tree.SuffixTree;
 
 public class OutputVisitor implements SuffixTreeVisitor {
     private int appearances;
