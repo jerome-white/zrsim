@@ -29,6 +29,10 @@ public class SuffixTree {
         return redundant.get();
     }
 
+    public void markRedundant() {
+        redundant.set(true);
+    }
+
     public void add(CharSequence ngram, Location location) {
         Character head = ngram.charAt(0);
         children.putIfAbsent(head, new SuffixTree());
@@ -56,43 +60,8 @@ public class SuffixTree {
         return (ngram.length() > 1) ? child.find(ngram.substring(1)) : child;
     }
 
-    private void markRedundants(SuffixTree root, String ngram) {
-        children.forEach((k, v) -> v.markRedundants(root, ngram + k));
-
-        for (String partial : new StringWindow(ngram, ngram.length() - 1)) {
-            try {
-                SuffixTree node = root.find(partial);
-                if (node.isRedundant()) {
-                    continue;
-                }
-
-                int overlap = 0;
-                int epsilon = ngram.length() - partial.length();
-
-                for (Location theirs : node.locations) {
-                    for (Location ours : locations) {
-                        if (ours.contains(theirs, epsilon)) {
-                            overlap++;
-                            break;
-                        }
-                    }
-                }
-
-                if (overlap == node.locations.size()) {
-                    node.redundant.set(true);
-                }
-            }
-            catch (NoSuchElementException error) {}
-            catch (IllegalArgumentException error) {}
-        }
-    }
-
-    public void markRedundants() {
-        markRedundants(this, new String());
-    }
-
     public void accept(SuffixTreeVisitor visitor) {
-        visitor.visit(this);
         children.forEach((k, v) -> v.accept(visitor.spawn(k)));
+        visitor.visit(this);
     }
 }
