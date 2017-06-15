@@ -7,23 +7,33 @@ import util.Location;
 import util.StringWindow;
 
 public class MarkRedundantVisitor implements SuffixTreeVisitor {
+    private int length;
+
     private String ngram;
     private SuffixTree root;
     private StringWindow stringWindow;
 
-    public MarkRedundantVisitor(String ngram, SuffixTree root) {
+    public MarkRedundantVisitor(String ngram, SuffixTree root, int length) {
 	this.ngram = ngram;
         this.root = root;
+        this.length = length;
 
         stringWindow = new StringWindow(ngram, ngram.length() - 1);
     }
 
+    public MarkRedundantVisitor(String ngram, SuffixTree root) {
+        this(ngram, root, 0);
+    }
+
     public SuffixTreeVisitor spawn(Character gram) {
-        return new MarkRedundantVisitor(ngram + gram, root);
+        return new MarkRedundantVisitor(ngram + gram, root, length);
     }
 
     public void visit(SuffixTree node) {
         for (String partial : stringWindow) {
+            if (length > 0 && partial.length() < length) {
+                continue;
+            }
             try {
                 SuffixTree current = root.find(partial);
                 if (current.isRedundant()) {

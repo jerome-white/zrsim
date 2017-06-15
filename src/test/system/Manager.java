@@ -48,7 +48,9 @@ public class Manager {
         LOGGER.info("Term selection");
 
         root.getChildren().forEach(1, (k, v) -> {
-                v.accept(new MarkRedundantVisitor(k.toString(), root));
+                SuffixTreeVisitor visitor =
+                    new MarkRedundantVisitor(k.toString(), root, min_ngrams);
+                v.accept(visitor);
             });
 
         /*
@@ -59,11 +61,12 @@ public class Manager {
         try (PrintStream printStream =
              new PrintStream(new FileOutputStream(output))) {
             root.getChildren().forEach(1, (k, v) -> {
-                    SuffixTreeVisitor visitor = new OutputVisitor(k.toString(),
-                                                                  min_ngrams,
-                                                                  2,
-                                                                  false,
-                                                                  printStream);
+                    SuffixTreeVisitor visitor =
+                        new OutputVisitor(k.toString(),
+                                          min_ngrams,
+                                          2,
+                                          false,
+                                          printStream);
                     v.accept(visitor);
                 });
         }
