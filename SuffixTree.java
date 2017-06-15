@@ -70,28 +70,19 @@ public class SuffixTree {
                     continue;
                 }
 
+                int overlap = 0;
                 int epsilon = ngram.length() - n.length();
 
-                SortedSet<Location> theirLocationSet =
-                    new TreeSet<Location>(node.locations);
-                Iterator<Location> theirSet = theirLocationSet.iterator();
-
-                SortedSet<Location> myLocationSet =
-                    new TreeSet<Location>(locations);
-                Iterator<Location> ourSet = myLocationSet.iterator();
-
-                while (theirSet.hasNext()) {
-                    Location theirLocation = theirSet.next();
-                    while (ourSet.hasNext()) {
-                        Location ourLocation = ourSet.next();
-                        if (ourLocation.contains(theirLocation, epsilon)) {
-                            theirSet.remove();
+                for (Location theirs : node.locations) {
+                    for (Location ours : locations) {
+                        if (ours.contains(theirs, epsilon)) {
+                            overlap++;
                             break;
                         }
                     }
                 }
 
-                if (theirLocationSet.isEmpty()) {
+                if (overlap == node.locations.size()) {
                     node.redundant.set(true);
                 }
             }
