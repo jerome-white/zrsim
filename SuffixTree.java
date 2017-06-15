@@ -81,10 +81,10 @@ public class SuffixTree {
                 Iterator<Location> inner = mySortedLocations.iterator();
 
                 while (outer.hasNext()) {
-                    Location x = outer.next();
+                    Location theirs = outer.next();
                     while (inner.hasNext()) {
-                        Location y = inner.next();
-                        if (y.contains(x, epsilon)) {
+                        Location ours = inner.next();
+                        if (ours.contains(theirs, epsilon)) {
                             outer.remove();
                             break;
                         }
