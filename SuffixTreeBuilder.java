@@ -19,22 +19,24 @@ public class SuffixTreeBuilder implements Runnable {
 
     public void run() {
         int len;
+        int skip = 1;
         CharBuffer buffer = CharBuffer.allocate(n);
+        String document = file.getName();
 
         try (Reader in = new BufferedReader(new FileReader(file))) {
-            for (int i = 0; ; i++) {
-                in.mark(n + 1);
+            for (int i = 0; ; i += skip) {
+                in.mark(n);
                 len = in.read(buffer);
                 if (len != n) {
                     break;
                 }
                 buffer.flip();
 
-                tree.add(buffer, new Location(file, i));
+                tree.add(buffer, new Location(document, i));
 
                 buffer.clear();
                 in.reset();
-                in.skip(1);
+                in.skip(skip);
             }
             in.close();
         }
