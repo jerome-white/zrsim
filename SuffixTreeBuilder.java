@@ -18,15 +18,14 @@ public class SuffixTreeBuilder implements Runnable {
     }
 
     public void run() {
-        int len;
-        int skip = 1;
-        CharBuffer buffer = CharBuffer.allocate(n);
-        String document = file.getName();
-
         try (Reader in = new BufferedReader(new FileReader(file))) {
+		int skip = 1;
+		CharBuffer buffer = CharBuffer.allocate(n);
+		String document = file.getName();
+
             for (int i = 0; ; i += skip) {
                 in.mark(n);
-                len = in.read(buffer);
+                int len = in.read(buffer);
                 if (len != n) {
                     break;
                 }
