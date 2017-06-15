@@ -6,12 +6,12 @@ import java.io.BufferedReader;
 import java.nio.CharBuffer;
 import java.lang.Runnable;
 
-public class SuffixTreeBuilder implements Runnable {
+public class DocumentParser implements Runnable {
     private int n;
     private File file;
     private SuffixTree tree;
 
-    public SuffixTreeBuilder(SuffixTree tree, File file, int n) {
+    public DocumentParser(SuffixTree tree, File file, int n) {
         this.file = file;
         this.n = n;
         this.tree = tree;
@@ -19,9 +19,9 @@ public class SuffixTreeBuilder implements Runnable {
 
     public void run() {
         try (Reader in = new BufferedReader(new FileReader(file))) {
-		int skip = 1;
-		CharBuffer buffer = CharBuffer.allocate(n);
-		String document = file.getName();
+            int skip = 1;
+            CharBuffer buffer = CharBuffer.allocate(n);
+            String document = file.getName();
 
             for (int i = 0; ; i += skip) {
                 in.mark(n);

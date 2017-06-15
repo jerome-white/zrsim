@@ -26,7 +26,7 @@ public class Manager {
         ExecutorService es = Executors.newFixedThreadPool(pool);
         for (File document : directory.listFiles()) {
             assert !document.isDirectory();
-            es.execute(new SuffixTreeBuilder(root, document, max_ngrams));
+            es.execute(new DocumentParser(root, document, max_ngrams));
         }
         es.shutdown();
 
