@@ -48,5 +48,7 @@ public class Manager {
                 String ngram = k.toString();
                 v.accept(new OutputVisitor(ngram, min_ngrams, 2, false));
             });
+
+        LOGGER.info("Complete");
     }
 }
