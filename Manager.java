@@ -35,15 +35,18 @@ public class Manager {
          */
         LOGGER.info("Term selection");
 
-        root.getChildren().forEachValue(1, v -> v.markRedundants());
+        root.getChildren().forEach(1, (k, v) -> {
+                v.accept(new MarkRedundantVisitor(k.toString(), root));
+            });
 
         /*
          * Dump the tree to disk
          */
         LOGGER.info("Terms to disk");
 
-        root.getChildren().forEachValue(1, v -> {
-                v.accept(new SuffixTreeVisitor(min_ngrams, 2, false));
+        root.getChildren().forEach(1, (k, v) -> {
+                String ngram = k.toString();
+                v.accept(new OutputVisitor(ngram, min_ngrams, 2, false));
             });
     }
 }
