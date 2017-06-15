@@ -72,26 +72,26 @@ public class SuffixTree {
 
                 int epsilon = ngram.length() - n.length();
 
-                SortedSet<Location> theirSortedLocations =
+                SortedSet<Location> theirLocationSet =
                     new TreeSet<Location>(node.locations);
-                Iterator<Location> outer = theirSortedLocations.iterator();
+                Iterator<Location> theirSet = theirLocationSet.iterator();
 
-                SortedSet<Location> mySortedLocations =
+                SortedSet<Location> myLocationSet =
                     new TreeSet<Location>(locations);
-                Iterator<Location> inner = mySortedLocations.iterator();
+                Iterator<Location> ourSet = myLocationSet.iterator();
 
-                while (outer.hasNext()) {
-                    Location theirs = outer.next();
-                    while (inner.hasNext()) {
-                        Location ours = inner.next();
-                        if (ours.contains(theirs, epsilon)) {
-                            outer.remove();
+                while (theirSet.hasNext()) {
+                    Location theirLocation = theirSet.next();
+                    while (ourSet.hasNext()) {
+                        Location ourLocation = ourSet.next();
+                        if (ourLocation.contains(theirLocation, epsilon)) {
+                            theirSet.remove();
                             break;
                         }
                     }
                 }
 
-                if (theirSortedLocations.isEmpty()) {
+                if (theirLocationSet.isEmpty()) {
                     node.redundant.set(true);
                 }
             }
