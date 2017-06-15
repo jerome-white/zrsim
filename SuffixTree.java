@@ -66,7 +66,7 @@ public class SuffixTree {
         for (String n : window) {
             try {
                 SuffixTree node = root.find(n);
-                if (n.isRedundant()) {
+                if (node.isRedundant()) {
                     continue;
                 }
 
