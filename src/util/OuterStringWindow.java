@@ -2,12 +2,12 @@ package util;
 
 import java.util.Iterator;
 
-public class LeftRightStringWindow extends StringWindow {
+public class OuterStringWindow extends StringWindow {
     private String string;
     private int chunk;
     private int cursor;
 
-    public LeftRightStringWindow(String string, int chunk) {
+    public OuterStringWindow(String string, int chunk) {
         this.string = string;
         this.chunk = chunk;
         cursor = 0;

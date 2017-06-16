@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import tree.SuffixTree;
 import util.Location;
 import util.StringWindow;
-import util.LeftRightStringWindow;
+import util.OuterStringWindow;
 
 public class MarkRedundantVisitor implements SuffixTreeVisitor {
     private int length;
@@ -19,7 +19,7 @@ public class MarkRedundantVisitor implements SuffixTreeVisitor {
         this.root = root;
         this.length = length;
 
-        stringWindow = new LeftRightStringWindow(ngram, ngram.length() - 1);
+        stringWindow = new OuterStringWindow(ngram, ngram.length() - 1);
     }
 
     public MarkRedundantVisitor(String ngram, SuffixTree root) {
