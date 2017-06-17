@@ -8,33 +8,23 @@ import util.StringWindow;
 import util.OuterStringWindow;
 
 public class MarkRedundantVisitor implements SuffixTreeVisitor {
-    private int length;
-
     private String ngram;
     private SuffixTree root;
     private StringWindow stringWindow;
 
-    public MarkRedundantVisitor(String ngram, SuffixTree root, int length) {
+    public MarkRedundantVisitor(String ngram, SuffixTree root) {
 	this.ngram = ngram;
         this.root = root;
-        this.length = length;
 
         stringWindow = new OuterStringWindow(ngram, ngram.length() - 1);
     }
 
-    public MarkRedundantVisitor(String ngram, SuffixTree root) {
-        this(ngram, root, 0);
-    }
-
-    public SuffixTreeVisitor spawn(Character gram) {
-        return new MarkRedundantVisitor(ngram + gram, root, length);
+    public SuffixTreeVisitor spawn(String ngram) {
+        return new MarkRedundantVisitor(this.ngram + ngram, root);
     }
 
     public void visit(SuffixTree node) {
         for (String partial : stringWindow) {
-            if (length > 0 && partial.length() < length) {
-                continue;
-            }
             try {
                 SuffixTree current = root.find(partial);
                 if (current.isRedundant()) {

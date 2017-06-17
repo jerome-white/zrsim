@@ -27,7 +27,7 @@ public class Manager {
         int max_ngrams = Integer.parseInt(args[2]);
         File output = new File(args[3]);
 
-        SuffixTree root = new SuffixTree();
+        SuffixTree root = new SuffixTree(min_ngrams);
 
         /*
          * add the documents to the suffix tree
@@ -48,9 +48,7 @@ public class Manager {
         LOGGER.info("Term selection");
 
         root.getChildren().forEach(1, (k, v) -> {
-                SuffixTreeVisitor visitor =
-                    new MarkRedundantVisitor(k.toString(), root, min_ngrams);
-                v.accept(visitor);
+                v.accept(new MarkRedundantVisitor(k.toString(), root));
             });
 
         /*
@@ -58,16 +56,9 @@ public class Manager {
          */
         LOGGER.info("Terms to disk");
 
-        try (PrintStream printStream =
-             new PrintStream(new FileOutputStream(output))) {
+        try (PrintStream out = new PrintStream(new FileOutputStream(output))) {
             root.getChildren().forEach(1, (k, v) -> {
-                    SuffixTreeVisitor visitor =
-                        new OutputVisitor(k.toString(),
-                                          min_ngrams,
-                                          2,
-                                          false,
-                                          printStream);
-                    v.accept(visitor);
+                    v.accept(new OutputVisitor(k.toString(), 2, false, out));
                 });
         }
         catch (FileNotFoundException error) {}
