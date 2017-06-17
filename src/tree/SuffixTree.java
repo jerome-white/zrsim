@@ -1,7 +1,5 @@
 package tree;
 
-import java.lang.Character;
-import java.lang.CharSequence;
 import java.lang.IllegalArgumentException;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,20 +7,29 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import util.Location;
+import util.StringPartition;
 import visitor.SuffixTreeVisitor;
 
 public class SuffixTree {
+    private final int key_length;
+
     private AtomicBoolean redundant;
-    private ConcurrentHashMap<Character, SuffixTree> children;
+    private ConcurrentHashMap<String, SuffixTree> children;
     private ConcurrentLinkedQueue<Location> locations;
 
-    public SuffixTree() {
+    public SuffixTree(int key_length) {
+        this.key_length = key_length;
+
         redundant = new AtomicBoolean(false);
-        children = new ConcurrentHashMap<Character, SuffixTree>();
+        children = new ConcurrentHashMap<String, SuffixTree>();
         locations = new ConcurrentLinkedQueue<Location>();
     }
 
-    public ConcurrentHashMap<Character, SuffixTree> getChildren() {
+    public SuffixTree() {
+        this(1);
+    }
+
+    public ConcurrentHashMap<String, SuffixTree> getChildren() {
         return children;
     }
 
@@ -38,31 +45,30 @@ public class SuffixTree {
         redundant.set(true);
     }
 
-    public void add(CharSequence ngram, Location location) {
-        Character head = ngram.charAt(0);
-        children.putIfAbsent(head, new SuffixTree());
-
-        SuffixTree child = children.get(head);
-        child.locations.add(location);
-
-        if (ngram.length() > 1) {
-            CharSequence tail = ngram.subSequence(1, ngram.length());
-            child.add(tail, location);
+    public void add(String ngram, Location location) {
+        if (ngram.isEmpty()) {
+            locations.add(location);
+        }
+        else {
+            StringPartition partition = new StringPartition(ngram, key_length);
+            children.putIfAbsent(partition.head, new SuffixTree());
+            SuffixTree child = children.get(partition.head);
+            child.add(partition.tail, location);
         }
     }
 
     public SuffixTree find(String ngram) {
         if (ngram.isEmpty()) {
-            throw new java.lang.IllegalArgumentException();
+            return this;
         }
 
-        Character head = ngram.charAt(0);
-        SuffixTree child = children.get(head);
+        StringPartition partition = new StringPartition(ngram, key_length);
+        SuffixTree child = children.get(partition.head);
         if (child == null) {
-            throw new NoSuchElementException(head.toString());
+            throw new NoSuchElementException();
 	}
 
-        return (ngram.length() > 1) ? child.find(ngram.substring(1)) : child;
+        return child.find(partition.tail);
     }
 
     public void accept(SuffixTreeVisitor visitor) {
