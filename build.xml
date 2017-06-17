@@ -1,4 +1,4 @@
-<project name="ZR Simulator" default="dist" basedir=".">
+<project name="ZR Discovery Simulator" default="dist" basedir=".">
   <property name="src" location="src"/>
   <property name="lib" location="lib"/>
   <property name="var" location="log"/>
@@ -31,6 +31,22 @@
 	   includeantruntime="false">
       <compilerarg value="-Xlint:unchecked"/>
     </javac>
+  </target>
+
+
+  <target name="test" depends="compile" >
+    <junit showoutput="true"
+           printsummary="yes"
+           fork="yes"
+           haltonfailure="no">
+      <formatter type="plain"/>
+      <classpath refid="default_classpath"/>
+      <batchtest todir="${var}">
+        <fileset dir="${src}">
+          <include name="**/test/unit/*.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
   </target>
 
   <target name="run" depends="compile">
