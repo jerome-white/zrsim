@@ -18,6 +18,15 @@ public class Location implements Comparable<Location> {
         return (cmp == 0) ? Integer.compare(offset, o.offset) : cmp;
     }
 
+    public boolean equals(Object o) {
+        if (!(o instanceof Location)) {
+            return false;
+        }
+        Location location = (Location)o;
+
+        return document.equals(location.document) && location.offset == offset;
+    }
+
     public boolean aligns(Location o, int epsilon) {
         return o.offset == offset || o.offset <= offset + epsilon;
     }
