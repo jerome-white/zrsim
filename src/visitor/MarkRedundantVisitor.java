@@ -48,7 +48,6 @@ public class MarkRedundantVisitor implements SuffixTreeVisitor {
                 }
             }
             catch (NoSuchElementException error) {}
-            catch (IllegalArgumentException error) {}
         }
     }
 }
