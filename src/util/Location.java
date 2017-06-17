@@ -27,11 +27,8 @@ public class Location implements Comparable<Location> {
         return document.equals(location.document) && location.offset == offset;
     }
 
-    public boolean aligns(Location o, int epsilon) {
-        return o.offset == offset || o.offset <= offset + epsilon;
-    }
-
     public boolean contains(Location o, int epsilon) {
-        return document.equals(o.document) && aligns(o, epsilon);
+        return document.equals(o.document) &&
+            (o.offset == offset || o.offset <= offset + epsilon);
     }
 }

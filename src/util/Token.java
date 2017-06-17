@@ -21,9 +21,4 @@ public class Token {
 
         return buffer.toString();
     }
-
-    public boolean contains(Token o, int epsilon) {
-        return ngram.indexOf(o.ngram) >= 0 &&
-            location.aligns(o.location, epsilon);
-    }
 }
