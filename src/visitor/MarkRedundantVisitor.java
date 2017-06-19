@@ -6,7 +6,6 @@ import tree.SuffixTree;
 import util.Location;
 import util.StringWindow;
 import util.OuterStringWindow;
-import util.ComprehensiveStringWindow;
 
 public class MarkRedundantVisitor implements SuffixTreeVisitor {
     private String ngram;
@@ -17,8 +16,7 @@ public class MarkRedundantVisitor implements SuffixTreeVisitor {
 	this.ngram = ngram;
         this.root = root;
 
-        // stringWindow = new OuterStringWindow(ngram, ngram.length() - 1);
-        stringWindow = new ComprehensiveStringWindow(ngram);
+        stringWindow = new OuterStringWindow(ngram, ngram.length() - 1);
     }
 
     public SuffixTreeVisitor spawn(String ngram) {
