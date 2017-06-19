@@ -58,6 +58,7 @@
       <arg value="${min_ngrams}"/>
       <arg value="${max_ngrams}"/>
       <arg value="${output}"/>
+      <arg value="${tmpdir}"/>
     </java>
   </target>
 </project>
