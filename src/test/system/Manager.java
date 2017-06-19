@@ -77,9 +77,7 @@ public class Manager {
             new ConcurrentHashMap<String, File>();
         root.getChildren().forEach(1, (k, v) -> {
                 try {
-                    File tmpfile = (tmpdir == null) ?
-                        File.createTempFile(k, "") :
-                        File.createTempFile(k, "", tmpdir);
+                    File tmpfile = File.createTempFile(k, null, tmpdir);
                     tmpfile.deleteOnExit();
 
                     assert !fragments.containsKey(k);
