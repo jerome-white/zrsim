@@ -109,7 +109,7 @@ public class SuffixTree {
 
         /*
          * A node with an empty location index is invalid in
-         * principle; however, without this check it the method would
+         * principle; however, without this check the method would
          * return 'true', which would be difficult to interpret.
          */
         if (locations.isEmpty()) {
@@ -131,33 +131,26 @@ public class SuffixTree {
             if (theirOffsets == null) {
                 return false;
             }
-
-            /*
-             * Should appear in at least as many places.
-             */
-            SortedSet<Integer> myOffsets = locations.get(document);
-            int overlap = myOffsets.size();
-            if (overlap > theirOffsets.size()) {
-                return false;
-            }
-
-            /*
-             * An appearance is a subset if the offset is exactly
-             * aligned, or "within" the other.
-             */
             Iterator<Integer> iterator = theirOffsets.iterator();
+
+            /*
+             * An appearance is a subset if the offset is either
+             * exactly aligned or "within" the other.
+             */
+            int overlap = 0;
+            SortedSet<Integer> myOffsets = locations.get(document);
 
             for (Integer i : myOffsets) {
                 while (iterator.hasNext()) {
                     Integer j = iterator.next();
                     if (i == j || i == j + epsilon) {
-                        overlap--;
+                        overlap++;
                         break;
                     }
                 }
             }
 
-            if (overlap > 0) {
+            if (overlap < myOffsets.size()) {
                 return false;
             }
         }
