@@ -100,37 +100,64 @@ public class SuffixTree {
         return hits;
     }
 
+    /*
+     * It is assumed that this will be called for ngrams that are
+     * string-subsets of one another.
+     */
     public boolean isSubset(SuffixTree node, int epsilon) {
         assert epsilon >= 0;
 
+        /*
+         * A node with an empty location index is invalid in
+         * principle; however, without this check it the method would
+         * return 'true', which would be difficult to interpret.
+         */
         if (locations.isEmpty()) {
             throw new IllegalStateException();
         }
 
+        /*
+         * Should appear in at least as many places.
+         */
+        if (locations.size() > node.locations.size()) {
+            return false;
+        }
+
         for (String document : locations.keySet()) {
+            /*
+             * Should appear in more documents.
+             */
             SortedSet<Integer> theirOffsets = node.locations.get(document);
             if (theirOffsets == null) {
                 return false;
             }
-            Iterator<Integer> iterator = theirOffsets.iterator();
 
-            int overlap = 0;
+            /*
+             * Should appear in at least as many places.
+             */
             SortedSet<Integer> myOffsets = locations.get(document);
-
-            for (Integer i : myOffsets) {
-                if (!iterator.hasNext()) {
-                    return false;
-                }
-                do {
-                    Integer j = iterator.next();
-                    if (i == j || i == j + epsilon) {
-                        overlap++;
-                        break;
-                    }
-                } while (iterator.hasNext());
+            int overlap = myOffsets.size();
+            if (overlap > theirOffsets.size()) {
+                return false;
             }
 
-            if (overlap < myOffsets.size()) {
+            /*
+             * An appearance is a subset if the offset is exactly
+             * aligned, or "within" the other.
+             */
+            Iterator<Integer> iterator = theirOffsets.iterator();
+
+            for (Integer i : myOffsets) {
+                while (iterator.hasNext()) {
+                    Integer j = iterator.next();
+                    if (i == j || i == j + epsilon) {
+                        overlap--;
+                        break;
+                    }
+                }
+            }
+
+            if (overlap > 0) {
                 return false;
             }
         }
