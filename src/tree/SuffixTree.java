@@ -1,11 +1,14 @@
 package tree;
 
+import java.lang.Long;
+import java.lang.IllegalStateException;
+import java.util.TreeSet;
+import java.util.Iterator;
+import java.util.SortedSet;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import util.Location;
 import util.StringPartition;
 import visitor.SuffixTreeVisitor;
 
@@ -14,14 +17,14 @@ public class SuffixTree {
 
     private AtomicBoolean redundant;
     private ConcurrentHashMap<String, SuffixTree> children;
-    private ConcurrentLinkedQueue<Location> locations;
+    private ConcurrentHashMap<String, SortedSet<Integer>> locations;
 
     public SuffixTree(int key_length) {
         this.key_length = key_length;
 
         redundant = new AtomicBoolean(false);
         children = new ConcurrentHashMap<String, SuffixTree>();
-        locations = new ConcurrentLinkedQueue<Location>();
+        locations = new ConcurrentHashMap<String, SortedSet<Integer>>();
     }
 
     public SuffixTree() {
@@ -32,7 +35,7 @@ public class SuffixTree {
         return children;
     }
 
-    public ConcurrentLinkedQueue<Location> getLocations() {
+    public ConcurrentHashMap<String, SortedSet<Integer>> getLocations() {
         return locations;
     }
 
@@ -44,15 +47,30 @@ public class SuffixTree {
         redundant.set(true);
     }
 
-    public void add(String ngram, Location location) {
-        if (ngram.isEmpty()) {
-            locations.add(location);
+    public void accept(SuffixTreeVisitor visitor) {
+        children.forEach((k, v) -> v.accept(visitor.spawn(k)));
+        visitor.visit(this);
+    }
+
+    private void addLocation(String ngram, String document, int offset) {
+        locations.putIfAbsent(document, new TreeSet<Integer>());
+        SortedSet<Integer> offsets = locations.get(document);
+
+        synchronized (offsets) {
+            offsets.add(offset);
         }
-        else {
+
+        add(ngram, document, offset);
+    }
+
+    public void add(String ngram, String document, int offset) {
+        if (!ngram.isEmpty()) {
             StringPartition partition = new StringPartition(ngram, key_length);
+
             children.putIfAbsent(partition.head, new SuffixTree());
             SuffixTree child = children.get(partition.head);
-            child.add(partition.tail, location);
+
+            child.addLocation(partition.tail, document, offset);
         }
     }
 
@@ -61,17 +79,66 @@ public class SuffixTree {
             return this;
         }
 
-        StringPartition partition = new StringPartition(ngram, key_length);
-        SuffixTree child = children.get(partition.head);
-        if (child == null) {
-            throw new NoSuchElementException();
-	}
+        if (ngram.length() >= key_length) {
+            StringPartition partition = new StringPartition(ngram, key_length);
+            SuffixTree child = children.get(partition.head);
+            if (child != null) {
+                return child.find(partition.tail);
+            }
+        }
 
-        return child.find(partition.tail);
+        throw new NoSuchElementException();
     }
 
-    public void accept(SuffixTreeVisitor visitor) {
-        children.forEach((k, v) -> v.accept(visitor.spawn(k)));
-        visitor.visit(this);
+    public int appearances() {
+        int hits = 0;
+
+        for (String document : locations.keySet()) {
+            hits += locations.get(document).size();
+        }
+
+        return hits;
+    }
+
+    public boolean isSubset(SuffixTree node, int epsilon) {
+        assert epsilon >= 0;
+
+        if (locations.isEmpty()) {
+            throw new IllegalStateException();
+        }
+
+        for (String document : locations.keySet()) {
+            SortedSet<Integer> theirOffsets = node.locations.get(document);
+            if (theirOffsets == null) {
+                return false;
+            }
+            Iterator<Integer> iterator = theirOffsets.iterator();
+
+            int overlap = 0;
+            SortedSet<Integer> myOffsets = locations.get(document);
+
+            for (Integer i : myOffsets) {
+                if (!iterator.hasNext()) {
+                    return false;
+                }
+                do {
+                    Integer j = iterator.next();
+                    if (i == j || i == j + epsilon) {
+                        overlap++;
+                        break;
+                    }
+                } while (iterator.hasNext());
+            }
+
+            if (overlap < myOffsets.size()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean isSubset(SuffixTree node) {
+        return isSubset(node, 0);
     }
 }
