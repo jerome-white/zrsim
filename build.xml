@@ -28,7 +28,8 @@
     <javac srcdir="${src}"
 	   destdir="${build}"
 	   classpathref="default_classpath"
-	   includeantruntime="false">
+	   includeantruntime="false"
+           debug="true">
       <compilerarg value="-Xlint:unchecked"/>
     </javac>
   </target>
