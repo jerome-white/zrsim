@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.lang.Runnable;
 
-import util.Location;
-
 public class DocumentParser implements Runnable {
     private int window;
     private File file;
@@ -32,7 +30,7 @@ public class DocumentParser implements Runnable {
                     break;
                 }
 
-                tree.add(new String(buffer), new Location(document, i));
+                tree.add(new String(buffer), document, i);
                 
                 in.reset();
                 in.skip(skip);
