@@ -55,7 +55,6 @@ public class SuffixTree {
     private void addLocation(String ngram, String document, int offset) {
         locations.putIfAbsent(document, new TreeSet<Integer>());
         SortedSet<Integer> offsets = locations.get(document);
-
         synchronized (offsets) {
             offsets.add(offset);
         }
@@ -69,7 +68,6 @@ public class SuffixTree {
 
             children.putIfAbsent(partition.head, new SuffixTree());
             SuffixTree child = children.get(partition.head);
-
             child.addLocation(partition.tail, document, offset);
         }
     }
@@ -116,13 +114,6 @@ public class SuffixTree {
             throw new IllegalStateException();
         }
 
-        /*
-         * Should appear in at least as many places.
-         */
-        if (locations.size() > node.locations.size()) {
-            return false;
-        }
-
         for (String document : locations.keySet()) {
             /*
              * Should appear in more documents.
@@ -131,27 +122,16 @@ public class SuffixTree {
             if (theirOffsets == null) {
                 return false;
             }
-            Iterator<Integer> iterator = theirOffsets.iterator();
 
             /*
              * An appearance is a subset if the offset is either
              * exactly aligned or "within" the other.
              */
-            int overlap = 0;
-            SortedSet<Integer> myOffsets = locations.get(document);
-
-            for (Integer i : myOffsets) {
-                while (iterator.hasNext()) {
-                    Integer j = iterator.next();
-                    if (i == j || i == j + epsilon) {
-                        overlap++;
-                        break;
-                    }
+            for (Integer myOffset : locations.get(document)) {
+                if (!theirOffsets.contains(myOffset) &&
+                    !theirOffsets.contains(myOffset - epsilon)) {
+                    return false;
                 }
-            }
-
-            if (overlap < myOffsets.size()) {
-                return false;
             }
         }
 
