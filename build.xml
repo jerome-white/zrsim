@@ -52,7 +52,7 @@
 
   <target name="run" depends="compile">
     <java fork="true" classname="test.system.Manager">
-      <jvmarg value="-ea"/>
+      <jvmarg value="-enableassertions"/>
       <classpath refid="default_classpath"/>
       <arg value="${corpus}"/>
       <arg value="${min_ngrams}"/>
