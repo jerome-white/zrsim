@@ -6,6 +6,7 @@ import tree.SuffixTree;
 import util.Location;
 import util.StringWindow;
 import util.OuterStringWindow;
+import util.ComprehensiveStringWindow;
 
 public class MarkRedundantVisitor implements SuffixTreeVisitor {
     private String ngram;
@@ -16,7 +17,8 @@ public class MarkRedundantVisitor implements SuffixTreeVisitor {
 	this.ngram = ngram;
         this.root = root;
 
-        stringWindow = new OuterStringWindow(ngram, ngram.length() - 1);
+        // stringWindow = new OuterStringWindow(ngram, ngram.length() - 1);
+        stringWindow = new ComprehensiveStringWindow(ngram);
     }
 
     public SuffixTreeVisitor spawn(String ngram) {
@@ -27,23 +29,8 @@ public class MarkRedundantVisitor implements SuffixTreeVisitor {
         for (String partial : stringWindow) {
             try {
                 SuffixTree current = root.find(partial);
-                if (current.isRedundant()) {
-                    continue;
-                }
-
-                int overlap = 0;
-                int epsilon = ngram.length() - partial.length();
-
-                for (Location theirs : current.getLocations()) {
-                    for (Location ours : node.getLocations()) {
-                        if (ours.contains(theirs, epsilon)) {
-                            overlap++;
-                            break;
-                        }
-                    }
-                }
-
-                if (overlap == current.getLocations().size()) {
+                if (!current.isRedundant() &&
+                    current.isSubset(node, ngram.indexOf(partial))) {
                     current.markRedundant();
                 }
             }
