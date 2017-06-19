@@ -80,6 +80,8 @@ public class Manager {
                     File tmpfile = (tmpdir == null) ?
                         File.createTempFile(k, "") :
                         File.createTempFile(k, "", tmpdir);
+                    tmpfile.deleteOnExit();
+
                     assert !fragments.containsKey(k);
                     File previous = fragments.put(k, tmpfile);
                 }
@@ -106,7 +108,6 @@ public class Manager {
                 try (FileChannel src = new FileInputStream(in).getChannel()) {
                     dest.transferFrom(src, dest.size(), src.size());
                 }
-                in.delete();
             }
         }
         catch (IOException ex) {
