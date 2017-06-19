@@ -24,7 +24,7 @@ public class Location implements Comparable<Location> {
         }
         Location location = (Location)o;
 
-        return document.equals(location.document) && location.offset == offset;
+        return document.equals(location.document) && offset == location.offset;
     }
 
     public boolean contains(Location o, int epsilon) {
