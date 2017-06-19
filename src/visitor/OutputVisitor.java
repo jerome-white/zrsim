@@ -1,12 +1,13 @@
 package visitor;
 
 import java.io.PrintStream;
+import java.util.StringJoiner;
 
-import util.Token;
-import util.Location;
 import tree.SuffixTree;
 
 public class OutputVisitor implements SuffixTreeVisitor {
+    private String delimiter = ",";
+
     private int appearances;
     private boolean redundants;
     private String ngram;
@@ -15,11 +16,20 @@ public class OutputVisitor implements SuffixTreeVisitor {
     public OutputVisitor(String ngram,
                          int appearances,
                          boolean redundants,
-                         PrintStream printStream) {
-	this.ngram = ngram;        
+                         PrintStream printStream,
+                         String delimiter) {
+	this.ngram = ngram;
 	this.appearances = appearances;
 	this.redundants = redundants;
         this.printStream = printStream;
+        this.delimiter = delimiter;
+    }
+
+    public OutputVisitor(String ngram,
+                         int appearances,
+                         boolean redundants,
+                         PrintStream printStream) {
+        this(ngram, appearances, redundants, printStream, ",");
     }
 
     public OutputVisitor(String ngram, int appearances, boolean redundants) {
@@ -38,11 +48,15 @@ public class OutputVisitor implements SuffixTreeVisitor {
     }
 
     public void visit(SuffixTree node) {
-        if (node.getLocations().size() >= appearances &&
+        if (node.appearances() >= appearances &&
             (redundants || !redundants && !node.isRedundant())) {
-            for (Location location : node.getLocations()) {
-                printStream.println(new Token(ngram, location));
-            }
+            node.getLocations().forEach((document, locations) -> {
+                    for (Integer offset : locations) {
+                        StringJoiner joiner = new StringJoiner(delimiter);
+                        joiner.add(document).add(ngram).add(offset.toString());
+                        printStream.println(joiner);
+                    }
+                });
         }
     }
 }
