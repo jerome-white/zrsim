@@ -19,18 +19,19 @@ public class DocumentParser implements Runnable {
 
     public void run() {
         try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+	    int len = 0;
             int skip = 1;
             char[] buffer = new char[window];
             String document = file.getName();
             
             for (int i = 0; ; i += skip) {
                 in.mark(window);
-                int len = in.read(buffer, 0, window);
+                len = in.read(buffer, 0, window);
                 if (len != window) {
                     break;
                 }
 
-                tree.add(new String(buffer), document, i);
+                tree.add(String.valueOf(buffer), document, i);
                 
                 in.reset();
                 in.skip(skip);
