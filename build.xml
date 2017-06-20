@@ -60,4 +60,15 @@
       <arg value="${output}"/>
     </java>
   </target>
+
+  <target name="slurm">
+    <java fork="true" classname="simulate.Manager">
+      <jvmarg value="-Xmx200g"/>
+      <classpath refid="default_classpath"/>
+      <arg value="${corpus}"/>
+      <arg value="${min_ngrams}"/>
+      <arg value="${max_ngrams}"/>
+      <arg value="${output}"/>
+    </java>
+  </target>
 </project>
