@@ -1,24 +1,27 @@
 package util;
 
-import java.lang.StringBuffer;
+import java.util.StringJoiner;
 
 public class Token {
-    private String ngram;
-    private Location location;
+    private final int offset;
 
-    public Token(String ngram, Location location) {
+    private final String document;
+    private final String ngram;
+    private final String delimiter = ",";
+
+    public Token(String document, int offset, String ngram) {
+        this.document = document;
+        this.offset = offset;
         this.ngram = ngram;
-        this.location = location;
     }
 
     public String toString() {
-        String separator = ",";
-        StringBuffer buffer = new StringBuffer();
+        StringJoiner joiner = new StringJoiner(delimiter);
+        joiner
+            .add(document)
+            .add(ngram)
+            .add(String.valueOf(offset));
 
-        buffer.append(location.document).append(separator);
-        buffer.append(ngram).append(separator);
-        buffer.append(location.offset);
-
-        return buffer.toString();
+        return joiner.toString();
     }
 }
