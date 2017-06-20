@@ -8,18 +8,37 @@ import util.StringPartition;
 
 public class StringPartitionTest {
     @Test
+    public void testSingle() {
+        String string = "a";
+        StringPartition partition = new StringPartition(string,
+                                                        string.length());
+
+        assertEquals(partition.head, string);
+        assertTrue(partition.tail.isEmpty());
+    }
+
+    @Test
     public void testHead() {
-        String abcd = "abcd";
-        StringPartition partition = new StringPartition(abcd, 4);
-        assertEquals(partition.head, abcd);
+        String string = "abcd";
+        StringPartition partition = new StringPartition(string, 4);
+
+        assertEquals(partition.head, string);
         assertTrue(partition.tail.isEmpty());
     }
 
     @Test
     public void testTail() {
-        String abcde = "abcde";
-        StringPartition partition = new StringPartition(abcde, 4);
+        String string = "abcde";
+        StringPartition partition = new StringPartition(string, 4);
+
         assertEquals(partition.head, "abcd");
         assertEquals(partition.tail, "e");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testTooLong() {
+        String string = "a";
+        StringPartition partition = new StringPartition(string,
+                                                        string.length() + 1);
     }
 }
