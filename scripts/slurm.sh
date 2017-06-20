@@ -12,6 +12,10 @@ while getopts "n:m:h" OPTION; do
     esac
 done
 
+module try-load jdk
+module try-load apache-ant
+ant clean compile
+
 trees=$SCRATCH/zrt/wsj/2017_0615_175330/trees
 # rm --recursive --force $trees
 # mkdir $trees
@@ -37,7 +41,7 @@ tar \
     --directory=\$SLURM_JOBTMP \
     --file=$SCRATCH/zrt/corpus.tar.bz
 
-ant run \
+ant slurm \
     -Dmin_ngrams=$min_ngram \
     -Dmax_ngrams=$i \
     -Dcorpus=\$SLURM_JOBTMP/corpus \
