@@ -1,8 +1,8 @@
 package visitor;
 
 import java.io.PrintStream;
-import java.util.StringJoiner;
 
+import util.Token;
 import tree.SuffixTree;
 
 public class OutputVisitor implements SuffixTreeVisitor {
@@ -52,9 +52,8 @@ public class OutputVisitor implements SuffixTreeVisitor {
             (redundants || !redundants && !node.isRedundant())) {
             node.getLocations().forEach((document, locations) -> {
                     for (Integer offset : locations) {
-                        StringJoiner joiner = new StringJoiner(delimiter);
-                        joiner.add(document).add(ngram).add(offset.toString());
-                        printStream.println(joiner);
+                        Token token = new Token(document, offset, ngram);
+                        printStream.println(token.toString());
                     }
                 });
         }
