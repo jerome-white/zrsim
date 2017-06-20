@@ -3,7 +3,6 @@ package visitor;
 import java.util.NoSuchElementException;
 
 import tree.SuffixTree;
-import util.Location;
 import util.StringWindow;
 import util.OuterStringWindow;
 
