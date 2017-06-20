@@ -12,7 +12,6 @@ while getopts "n:m:h" OPTION; do
     esac
 done
 
-
 trees=$SCRATCH/zrt/wsj/2017_0615_175330/trees
 # rm --recursive --force $trees
 # mkdir $trees
@@ -29,19 +28,25 @@ for i in `seq $min_ngram $max_ngram`; do
     cat <<EOF > $job
 #!/bin/bash
 
-module try-load jdk
-module try-load apache-ant
+# module try-load jdk
+# module try-load apache-ant
+
+tar \
+    --extract \
+    --bzip \
+    --directory=\$SLURM_JOBTMP \
+    --file=$SCRATCH/zrt/corpus.tar.bz
 
 ant run \
     -Dmin_ngrams=$min_ngram \
     -Dmax_ngrams=$i \
-    -Dcorpus=$SCRATCH/zrt/corpus \
+    -Dcorpus=\$SLURM_JOBTMP/corpus \
     -Doutput=$output
 EOF
 
     sbatch \
-	--mem=120G \
-	--time=24:00:00 \
+	--mem=240G \
+	--time=12:00:00 \
 	--mail-type=END,FAIL \
 	--mail-user=jsw7@nyu.edu \
 	--nodes=1 \
