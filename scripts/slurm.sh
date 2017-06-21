@@ -14,7 +14,7 @@ done
 
 module try-load jdk
 module try-load apache-ant
-ant clean compile
+ant clean compile || exit 1
 
 trees=$SCRATCH/zrt/wsj/2017_0615_175330/trees
 # rm --recursive --force $trees
