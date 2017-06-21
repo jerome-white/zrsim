@@ -52,22 +52,19 @@ public class SuffixTree {
         visitor.visit(this);
     }
 
-    private void addLocation(String ngram, String document, int offset) {
-        locations.computeIfAbsent(document, k -> new TreeSet<Integer>());
-        locations.computeIfPresent(document, (k, v) -> {
-                v.add(offset);
-                return v;
-            });
-
-        add(ngram, document, offset);
-    }
-
     public void add(String ngram, String document, int offset) {
         if (!ngram.isEmpty()) {
             StringPartition partition = new StringPartition(ngram, key_length);
-            children
-                .computeIfAbsent(partition.head, k -> new SuffixTree())
-                .addLocation(partition.tail, document, offset);
+            SuffixTree child = children.computeIfAbsent(partition.head,
+                                                        k -> new SuffixTree());
+            child.locations.compute(document, (k, v) -> {
+                    if (v == null) {
+                        v = new TreeSet<Integer>();
+                    }
+                    v.add(offset);
+                    return v;
+                });
+            child.add(partition.tail, document, offset);
         }
     }
 
