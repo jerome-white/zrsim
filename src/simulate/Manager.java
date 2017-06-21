@@ -33,10 +33,16 @@ public class Manager {
         suffixTree = new SuffixTree(min_ngram);
     }
 
-    public void addDocuments(File corpus, int max_ngram) {
+    public void addDocuments(File corpus, int max_ngram, int workers) {
         LOGGER.info("Adding terms");
 
         int pool = Runtime.getRuntime().availableProcessors();
+        if (pool < workers) {
+            LOGGER.warning("workers altered to available procs");
+        }
+        else {
+            pool = workers;
+        }
         ExecutorService es = Executors.newFixedThreadPool(pool);
 
         for (File document : corpus.listFiles()) {
@@ -114,11 +120,12 @@ public class Manager {
         int min_ngram = Integer.parseInt(args[1]);
         int max_ngram = Integer.parseInt(args[2]);
         File output = new File(args[3]);
+        int workers = Integer.parseInt(args[4]);
 
         LOGGER.info("Begin");
 
         Manager manager = new Manager(min_ngram);
-        manager.addDocuments(directory, max_ngram);
+        manager.addDocuments(directory, max_ngram, workers);
         manager.selectTerms();
         manager.generate(output);
 
