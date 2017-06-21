@@ -7,10 +7,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.UncheckedIOException;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.nio.channels.FileChannel;
 import java.lang.Long;
 import java.lang.IllegalStateException;
 import java.util.Map;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
@@ -33,29 +38,15 @@ public class Manager {
         suffixTree = new SuffixTree(min_ngram);
     }
 
-    public void addDocuments(File corpus, int max_ngram, int workers) {
+    public void addDocuments(Path corpus, int max_ngram) {
         LOGGER.info("Adding terms");
 
-        int pool = Runtime.getRuntime().availableProcessors();
-        if (pool < workers) {
-            LOGGER.warning("workers altered to available procs");
-        }
-        else {
-            pool = workers;
-        }
-        ExecutorService es = Executors.newFixedThreadPool(pool);
-
-        for (File document : corpus.listFiles()) {
-            assert !document.isDirectory();
-            es.execute(new DocumentParser(suffixTree, document, max_ngram));
-        }
-        es.shutdown();
-
+        DocumentParser parser = new DocumentParser(suffixTree, max_ngram);
         try {
-            es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            Files.walk(corpus).parallel().forEach(p -> parser.parse(p));
         }
-        catch (InterruptedException ex) {
-            throw new IllegalStateException(ex);
+        catch (IOException ex) {
+            throw new UncheckedIOException(ex);
         }
     }
 
@@ -67,19 +58,22 @@ public class Manager {
             });
     }
 
-    public void generate(File output) {
+    public void generate(Path output) {
         String slurm = "SLURM_JOBTMP";
         Map<String, String> env = System.getenv();
-        File tmpdir = env.containsKey(slurm) ? new File(env.get(slurm)) : null;
+        Path tmpdir = env.containsKey(slurm) ?
+            Paths.get(env.get(slurm)) : null;
 
-        ConcurrentHashMap<String, File> fragments =
-            new ConcurrentHashMap<String, File>();
+        ConcurrentHashMap<String, Path> fragments =
+            new ConcurrentHashMap<String, Path>();
+
         suffixTree.getChildren().forEachKey(1, k -> {
+                assert !fragments.containsKey(k);
                 try {
-                    File tmpfile = File.createTempFile(k, null, tmpdir);
-                    tmpfile.deleteOnExit();
-                    assert !fragments.containsKey(k);
-                    File previous = fragments.put(k, tmpfile);
+                    Path tmpfile = (tmpdir == null) ?
+                        Files.createTempFile(k, null) :
+                        Files.createTempFile(tmpdir, k, null);
+                    fragments.put(k, tmpfile);
                 }
                 catch (IOException ex) {
                     throw new UncheckedIOException(ex);
@@ -89,21 +83,24 @@ public class Manager {
         LOGGER.info("Terms to disk");
 
         suffixTree.getChildren().forEach(1, (k, v) -> {
-                File file = fragments.get(k);
-                try (PrintStream out =
-                     new PrintStream(new FileOutputStream(file), true)) {
-                    v.accept(new OutputVisitor(k, 2, false, out));
+                Path path = fragments.get(k);
+                try (PrintStream printStream =
+                     new PrintStream(Files.newOutputStream(path), true)) {
+                    v.accept(new OutputVisitor(k, 2, false, printStream));
                 }
-                catch (FileNotFoundException ex) {
+                catch (IOException ex) {
                     throw new UncheckedIOException(ex);
                 }
             });
 
         LOGGER.info("Disk consolidation");
 
-        try (FileChannel dest = new FileOutputStream(output).getChannel()) {
-            for (File in : fragments.values()) {
-                try (FileChannel src = new FileInputStream(in).getChannel()) {
+        try (FileChannel dest =
+             FileChannel.open(output, StandardOpenOption.WRITE)) {
+            for (Path input : fragments.values()) {
+                try (FileChannel src =
+                     FileChannel.open(input,
+                                      StandardOpenOption.DELETE_ON_CLOSE)) {
                     dest.transferFrom(src, dest.size(), src.size());
                 }
             }
@@ -116,16 +113,15 @@ public class Manager {
     public static void main(String[] args) {
         LOGGER.setLevel(Level.INFO);
 
-        File directory = new File(args[0]);
+        Path directory = Paths.get(args[0]);
         int min_ngram = Integer.parseInt(args[1]);
         int max_ngram = Integer.parseInt(args[2]);
-        File output = new File(args[3]);
-        int workers = Integer.parseInt(args[4]);
+        Path output = Paths.get(args[3]);
 
         LOGGER.info("Begin");
 
         Manager manager = new Manager(min_ngram);
-        manager.addDocuments(directory, max_ngram, workers);
+        manager.addDocuments(directory, max_ngram);
         manager.selectTerms();
         manager.generate(output);
 
