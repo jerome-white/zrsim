@@ -53,8 +53,8 @@ public class SuffixTree {
     }
 
     private void addLocation(String ngram, String document, int offset) {
-        locations.putIfAbsent(document, new TreeSet<Integer>());
-        SortedSet<Integer> offsets = locations.get(document);
+        SortedSet<Integer> offsets =
+            locations.computeIfAbsent(document, k -> new TreeSet<Integer>());
         synchronized (offsets) {
             offsets.add(offset);
         }
@@ -65,10 +65,9 @@ public class SuffixTree {
     public void add(String ngram, String document, int offset) {
         if (!ngram.isEmpty()) {
             StringPartition partition = new StringPartition(ngram, key_length);
-
-            children.putIfAbsent(partition.head, new SuffixTree());
-            SuffixTree child = children.get(partition.head);
-            child.addLocation(partition.tail, document, offset);
+            children
+                .computeIfAbsent(partition.head, k -> new SuffixTree())
+                .addLocation(partition.tail, document, offset);
         }
     }
 
