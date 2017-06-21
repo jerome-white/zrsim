@@ -55,9 +55,10 @@
       <jvmarg value="-enableassertions"/>
       <classpath refid="default_classpath"/>
       <arg value="${corpus}"/>
-      <arg value="${min_ngrams}"/>
-      <arg value="${max_ngrams}"/>
+      <arg value="${min_ngram}"/>
+      <arg value="${max_ngram}"/>
       <arg value="${output}"/>
+      <arg value="${workers}"/>
     </java>
   </target>
 
@@ -66,9 +67,10 @@
       <jvmarg value="-Xmx200g"/>
       <classpath refid="default_classpath"/>
       <arg value="${corpus}"/>
-      <arg value="${min_ngrams}"/>
-      <arg value="${max_ngrams}"/>
+      <arg value="${min_ngram}"/>
+      <arg value="${max_ngram}"/>
       <arg value="${output}"/>
+      <arg value="${workers}"/>
     </java>
   </target>
 </project>
