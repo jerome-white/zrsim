@@ -29,8 +29,9 @@ import visitor.OutputVisitor;
 import visitor.MarkRedundantVisitor;
 
 public class Manager {
-    private final static Logger LOGGER =
+    public final static Logger LOGGER =
         Logger.getLogger(Manager.class.getName());
+    private final static String SLURM_JOBTMP = "SLURM_JOBTMP";
 
     private SuffixTree suffixTree;
 
@@ -59,10 +60,9 @@ public class Manager {
     }
 
     public void generate(Path output) {
-        String slurm = "SLURM_JOBTMP";
         Map<String, String> env = System.getenv();
-        Path tmpdir = env.containsKey(slurm) ?
-            Paths.get(env.get(slurm)) : null;
+        Path tmpdir = env.containsKey(SLURM_JOBTMP) ?
+            Paths.get(env.get(SLURM_JOBTMP)) : null;
 
         ConcurrentHashMap<String, Path> fragments =
             new ConcurrentHashMap<String, Path>();
@@ -113,7 +113,7 @@ public class Manager {
     public static void main(String[] args) {
         LOGGER.setLevel(Level.INFO);
 
-        Path directory = Paths.get(args[0]);
+        Path corpus = Paths.get(args[0]);
         int min_ngram = Integer.parseInt(args[1]);
         int max_ngram = Integer.parseInt(args[2]);
         Path output = Paths.get(args[3]);
@@ -121,7 +121,7 @@ public class Manager {
         LOGGER.info("Begin");
 
         Manager manager = new Manager(min_ngram);
-        manager.addDocuments(directory, max_ngram);
+        manager.addDocuments(corpus, max_ngram);
         manager.selectTerms();
         manager.generate(output);
 
