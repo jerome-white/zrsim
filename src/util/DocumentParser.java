@@ -1,15 +1,17 @@
 package util;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.nio.file.Path;
-import java.nio.file.Files;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.channels.FileChannel;
 
 import tree.SuffixTree;
 
 public class DocumentParser {
+    private final Charset decoder = StandardCharsets.UTF_8;
+
     private int window;
     private SuffixTree tree;
 
@@ -18,29 +20,19 @@ public class DocumentParser {
         this.window = window;
     }
 
-    private BufferedReader pathToReader(Path path) throws IOException {
-        InputStream in = Files.newInputStream(path);
-        return new BufferedReader(new InputStreamReader(in));
-    }
-
     public void parse(Path path) {
-        try (BufferedReader reader = pathToReader(path)) {
-            int len = 0;
-            int skip = 1;
-            char[] buffer = new char[window];
+        try (FileChannel fc = FileChannel.open(path)) {
             String document = path.getFileName().toString();
+            ByteBuffer buffer = ByteBuffer.allocate(window);
 
-            for (int i = 0; ; i += skip) {
-                reader.mark(window);
-                len = reader.read(buffer, 0, window);
-                if (len != window) {
+            for (int i = 0; ; i++) {
+                fc.read(buffer, i);
+                if (buffer.hasRemaining()) {
                     break;
                 }
-
-                tree.add(String.valueOf(buffer), document, i);
-
-                reader.reset();
-                reader.skip(skip);
+                buffer.flip();
+                tree.add(decoder.decode(buffer).toString(), document, i);
+                buffer.rewind();
             }
         }
         catch (IOException error) {
