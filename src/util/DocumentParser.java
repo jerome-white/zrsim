@@ -1,4 +1,4 @@
-package tree;
+package util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Files;
+
+import tree.SuffixTree;
 
 public class DocumentParser {
     private int window;

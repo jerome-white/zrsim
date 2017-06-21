@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ConcurrentHashMap;
 
 import tree.SuffixTree;
-import tree.DocumentParser;
+import util.DocumentParser;
 import visitor.OutputVisitor;
 import visitor.MarkRedundantVisitor;
 
