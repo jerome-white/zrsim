@@ -43,7 +43,7 @@ public class Manager {
 
         DocumentParser parser = new DocumentParser(suffixTree, max_ngram);
         try {
-            Files.walk(corpus).parallel().forEach(p -> parser.parse(p));
+            Files.list(corpus).parallel().forEach(p -> parser.parse(p));
         }
         catch (IOException ex) {
             throw new UncheckedIOException(ex);
