@@ -53,11 +53,11 @@ public class SuffixTree {
     }
 
     private void addLocation(String ngram, String document, int offset) {
-        SortedSet<Integer> offsets =
-            locations.computeIfAbsent(document, k -> new TreeSet<Integer>());
-        synchronized (offsets) {
-            offsets.add(offset);
-        }
+        locations.computeIfAbsent(document, k -> new TreeSet<Integer>());
+        locations.computeIfPresent(document, (k, v) -> {
+                v.add(offset);
+                return v;
+            });
 
         add(ngram, document, offset);
     }
