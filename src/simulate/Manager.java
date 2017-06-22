@@ -96,7 +96,10 @@ public class Manager {
         LOGGER.info("Disk consolidation");
 
         try (FileChannel dest =
-             FileChannel.open(output, StandardOpenOption.WRITE)) {
+             FileChannel.open(output,
+                              StandardOpenOption.WRITE,
+                              StandardOpenOption.CREATE,
+                              StandardOpenOption.TRUNCATE_EXISTING)) {
             for (Path input : fragments.values()) {
                 try (FileChannel src =
                      FileChannel.open(input,
