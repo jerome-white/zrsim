@@ -31,6 +31,7 @@
 	   includeantruntime="false"
            debug="true">
       <compilerarg value="-Xlint:unchecked"/>
+      <exclude name="test/**"/>
     </javac>
   </target>
 
