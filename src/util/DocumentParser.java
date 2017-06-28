@@ -1,23 +1,22 @@
 package util;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.ByteBuffer;
+import java.nio.file.Path;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.channels.FileChannel;
 
 import tree.SuffixTree;
 
 public class DocumentParser {
-    private final Charset decoder = StandardCharsets.UTF_8;
-
     private int window;
     private SuffixTree tree;
+    private Charset charset;
 
     public DocumentParser(SuffixTree tree, int window) {
         this.tree = tree;
         this.window = window;
+	charset = Charset.forName("UTF-8");
     }
 
     public void parse(Path path) {
@@ -31,7 +30,7 @@ public class DocumentParser {
                     break;
                 }
                 buffer.flip();
-                tree.add(decoder.decode(buffer).toString(), document, i);
+                tree.add(charset.decode(buffer), document, i);
                 buffer.rewind();
             }
         }

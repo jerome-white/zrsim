@@ -1,5 +1,6 @@
 package tree;
 
+import java.nio.CharBuffer;
 import java.lang.Long;
 import java.lang.IllegalStateException;
 import java.util.TreeSet;
@@ -9,7 +10,6 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import util.StringPartition;
 import visitor.SuffixTreeVisitor;
 
 public class SuffixTree {
@@ -52,10 +52,11 @@ public class SuffixTree {
         visitor.visit(this);
     }
 
-    public void add(String ngram, String document, int offset) {
-        if (!ngram.isEmpty()) {
-            StringPartition partition = new StringPartition(ngram, key_length);
-            SuffixTree child = children.computeIfAbsent(partition.head,
+    public void add(CharBuffer ngram, String document, int offset) {
+        if (ngram.hasRemaining()) {
+	    char[] head = new char[key_length];
+	    ngram.get(head, 0, key_length);
+            SuffixTree child = children.computeIfAbsent(String.valueOf(head),
                                                         k -> new SuffixTree());
             child.locations.compute(document, (k, v) -> {
                     if (v == null) {
@@ -64,7 +65,7 @@ public class SuffixTree {
                     v.add(offset);
                     return v;
                 });
-            child.add(partition.tail, document, offset);
+            child.add(ngram, document, offset);
         }
     }
 
@@ -74,10 +75,11 @@ public class SuffixTree {
         }
 
         if (ngram.length() >= key_length) {
-            StringPartition partition = new StringPartition(ngram, key_length);
-            SuffixTree child = children.get(partition.head);
+	    String partition = ngram.substring(0, key_length);
+            SuffixTree child = children.get(partition);
             if (child != null) {
-                return child.find(partition.tail);
+		partition = ngram.substring(key_length);
+                return child.find(partition);
             }
         }
 
