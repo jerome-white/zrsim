@@ -6,13 +6,13 @@ public class ComprehensiveStringWindow extends StringWindow {
     private int left;
     private int right;
     private boolean report_self;
-    
-    private String string;    
+
+    private String string;
 
     public ComprehensiveStringWindow(String string, boolean report_self) {
         this.string = string;
         this.report_self = report_self;
-        
+
         left = 0;
         right = 1;
     }
