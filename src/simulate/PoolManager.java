@@ -34,10 +34,12 @@ import visitor.SuffixTreeVisitor;
 import visitor.MarkRedundantVisitor;
 
 public class PoolManager extends Manager {
+    private int pool;
     private ExecutorService executors;
 
     public PoolManager(int min_gram, int pool) {
 	super(min_gram);
+	this.pool = pool;
 	executors = Executors.newFixedThreadPool(pool);
     }
 
@@ -90,44 +92,44 @@ public class PoolManager extends Manager {
     }
 
     public void generate(Path output) {
-	List<Runnable> tasks = new ArrayList<Runnable>();
-
         Map<String, String> env = System.getenv();
         Path tmpdir = env.containsKey(SLURM_JOBTMP) ?
             Paths.get(env.get(SLURM_JOBTMP)) : null;
 
-        ConcurrentHashMap<String, Path> fragments =
-            new ConcurrentHashMap<String, Path>();
-
-        suffixTree.getChildren().forEachKey(1, k -> {
-                assert !fragments.containsKey(k);
-                try {
-                    Path tmpfile = (tmpdir == null) ?
-                        Files.createTempFile(k, null) :
-                        Files.createTempFile(tmpdir, k, null);
-                    fragments.put(k, tmpfile);
-                }
-                catch (IOException ex) {
-                    throw new UncheckedIOException(ex);
-                }
-            });
+        List<Path> fragments = new ArrayList<Path>();
+	try {
+	    for (int i = 0; i < pool; i++) {
+		String fname = String.valueOf(i);
+		Path tmpfile = (tmpdir == null) ?
+		    Files.createTempFile(fname, null) :
+		    Files.createTempFile(tmpdir, fname, null);
+		fragments.add(tmpfile);
+	    }
+	}
+	catch (IOException ex) {
+	    throw new UncheckedIOException(ex);
+	}
 
         LOGGER.info("Terms to disk");
 
-        suffixTree.getChildren().forEach((k, v) -> {
-                Path path = fragments.get(k);
-		tasks.add(() -> {
-			try (PrintStream printStream = new
-			     PrintStream(Files.newOutputStream(path), true)) {
-			    SuffixTreeVisitor visitor =
-				new OutputVisitor(k, 2, false, printStream);
-			    v.accept(visitor);
-			}
-			catch (IOException ex) {
-			    throw new UncheckedIOException(ex);
-			}
-		    });
-	    });
+	int i = 0;
+	List<Runnable> tasks = new ArrayList<Runnable>();
+	for (Map.Entry<String, SuffixTree> entry :
+		 suffixTree.getChildren().entrySet()) {
+	    Path path = fragments.get(i % fragments.size());
+	    String ngram = entry.getKey();
+	    SuffixTree tree = entry.getValue();
+	    tasks.add(() -> {
+		    try (PrintStream out = new
+			 PrintStream(Files.newOutputStream(path), true)) {
+			tree.accept(new OutputVisitor(ngram, 2, false, out));
+		    }
+		    catch (IOException ex) {
+			throw new UncheckedIOException(ex);
+		    }
+		});
+	    i++;
+	}
 	invoke(tasks);
 
         LOGGER.info("Disk consolidation");
@@ -137,7 +139,7 @@ public class PoolManager extends Manager {
                               StandardOpenOption.WRITE,
                               StandardOpenOption.CREATE,
                               StandardOpenOption.TRUNCATE_EXISTING)) {
-            for (Path input : fragments.values()) {
+            for (Path input : fragments) {
                 try (FileChannel src =
                      FileChannel.open(input,
                                       StandardOpenOption.DELETE_ON_CLOSE)) {
