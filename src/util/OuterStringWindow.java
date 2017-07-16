@@ -13,10 +13,6 @@ public class OuterStringWindow extends StringWindow {
         cursor = 0;
     }
 
-    public Iterator<String> iterator() {
-        return this;
-    }
-
     public boolean hasNext() {
         return chunk > 0 && cursor + chunk <= string.length();
     }

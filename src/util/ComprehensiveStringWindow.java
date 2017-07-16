@@ -38,10 +38,6 @@ public class ComprehensiveStringWindow extends StringWindow {
         this(string, 1);
     }
 
-    public Iterator<String> iterator() {
-        return this;
-    }
-
     public boolean hasNext() {
         return left + minimum <= length;
     }
