@@ -1,6 +1,7 @@
 package util;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.charset.Charset;
@@ -8,6 +9,7 @@ import java.nio.channels.FileChannel;
 import java.util.concurrent.Callable;
 
 import tree.SuffixTree;
+import simulate.Manager;
 
 public class DocumentParser implements Callable<String> {
     private int window;
@@ -25,8 +27,10 @@ public class DocumentParser implements Callable<String> {
     }
 
     public String call() {
+	String document = path.getFileName().toString();
+	Manager.LOGGER.info(document);
+
         try (FileChannel fc = FileChannel.open(path)) {
-            String document = path.getFileName().toString();
             ByteBuffer buffer = ByteBuffer.allocate(window);
 
             for (int i = 0; ; i++) {
@@ -38,13 +42,11 @@ public class DocumentParser implements Callable<String> {
                 tree.add(charset.decode(buffer), document, i);
                 buffer.rewind();
             }
-
-	    return document;
         }
-        catch (IOException error) {
-            System.err.println(error);
+        catch (IOException ex) {
+	    throw new UncheckedIOException(ex);
         }
 
-	return null;
+	return document;
     }
 }
