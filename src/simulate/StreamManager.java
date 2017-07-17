@@ -29,9 +29,13 @@ public class StreamManager extends Manager {
     public void addDocuments(Path corpus, int max_ngram) {
         LOGGER.info("Adding terms");
 
-        DocumentParser parser = new DocumentParser(suffixTree, max_ngram);
+
         try {
-            Files.list(corpus).parallel().forEach(p -> parser.parse(p));
+            Files
+		.list(corpus)
+		.parallel()
+		.forEach(p -> (new DocumentParser(suffixTree, max_ngram, p))
+			 .call());
         }
         catch (IOException ex) {
             throw new UncheckedIOException(ex);
