@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 
-public class RunManager {
+public class Simulator {
     public static void main(String[] args) {
         Manager.LOGGER.setLevel(Level.INFO);
 
@@ -21,6 +21,7 @@ public class RunManager {
         manager.addDocuments(corpus, max_ngram);
         manager.selectTerms();
         manager.generate(output);
+	manager.shutdown();
 
         Manager.LOGGER.info("Complete");
     }

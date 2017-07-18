@@ -52,7 +52,7 @@
   </target>
 
   <target name="run" depends="compile">
-    <java fork="true" classname="simulate.RunManager">
+    <java fork="true" classname="simulate.Simulator">
       <jvmarg value="-enableassertions"/>
       <classpath refid="default_classpath"/>
       <arg value="${corpus}"/>
@@ -63,7 +63,7 @@
   </target>
 
   <target name="slurm">
-    <java fork="true" classname="simulate.RunManager">
+    <java fork="true" classname="simulate.Simulator">
       <jvmarg value="-Xmx470g"/>
       <jvmarg value="-XX:+UseParallelGC"/>
       <jvmarg value="-XX:ParallelGCThreads=10"/>
