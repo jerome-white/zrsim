@@ -26,9 +26,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ConcurrentHashMap;
 
 import tree.SuffixTree;
-import util.TermSelector;
-import util.DocumentParser;
-import util.OutputFragment;
+import simulate.task.TermSelector;
+import simulate.task.DocumentParser;
+import simulate.task.OutputFragment;
 
 public class PoolManager extends Manager {
     private int pool;
@@ -144,5 +144,9 @@ public class PoolManager extends Manager {
         catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
+    }
+
+    public void shutdown() {
+	executors.shutdown();
     }
 }

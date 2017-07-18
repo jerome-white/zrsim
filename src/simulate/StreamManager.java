@@ -17,9 +17,9 @@ import java.util.logging.Level;
 import java.util.concurrent.ConcurrentHashMap;
 
 import tree.SuffixTree;
-import util.DocumentParser;
 import visitor.OutputVisitor;
 import visitor.MarkRedundantVisitor;
+import simulate.task.DocumentParser;
 
 public class StreamManager extends Manager {
     public StreamManager(int min_gram) {

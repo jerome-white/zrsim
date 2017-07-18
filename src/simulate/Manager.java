@@ -16,6 +16,8 @@ public abstract class Manager {
         suffixTree = new SuffixTree(min_ngram);
     }
 
+    public void shutdown() {}
+
     abstract public void addDocuments(Path corpus, int max_ngram);
     abstract public void selectTerms();
     abstract public void generate(Path output);
