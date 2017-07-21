@@ -7,12 +7,17 @@ public class Token {
 
     private final String document;
     private final String ngram;
-    private final String delimiter = ",";
+    private final String delimiter;
 
-    public Token(String document, int offset, String ngram) {
+    public Token(String document, int offset, String ngram, String delimiter) {
         this.document = document;
         this.offset = offset;
         this.ngram = ngram;
+	this.delimiter = delimiter;
+    }
+
+    public Token(String document, int offset, String ngram) {
+	this(document, offset, ngram, ",");
     }
 
     public String toString() {
