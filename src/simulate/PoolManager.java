@@ -24,8 +24,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import tree.SuffixTree;
+import util.SubList;
 import simulate.task.TermSelector;
 import simulate.task.DocumentParser;
 import simulate.task.OutputFragment;
@@ -86,37 +88,41 @@ public class PoolManager extends Manager {
     }
 
     public void generate(Path output) {
-        Map<String, String> env = System.getenv();
+	/*
+	 *
+	 */
+	List<String> children = new ArrayList<String>();
+	for (Map.Entry<String, SuffixTree> entry :
+		 suffixTree.getChildren().entrySet()) {
+	    children.add(entry.getKey());
+	}
+
+	/*
+	 *
+	 */
+	Map<String, String> env = System.getenv();
         Path tmpdir = env.containsKey(SLURM_JOBTMP) ?
             Paths.get(env.get(SLURM_JOBTMP)) : null;
 
-        List<Path> fragments = new ArrayList<Path>();
-	try {
-	    for (int i = 0; i < pool; i++) {
-		String fname = String.valueOf(i);
+	List<Path> fragments = new ArrayList<Path>();
+
+	/*
+	 *
+	 */
+	LOGGER.info("Terms to disk");
+
+	tasks.clear();
+	for (List<String> ngrams : new SubList<String>(children, pool)) {
+	    try {
 		Path tmpfile = (tmpdir == null) ?
-		    Files.createTempFile(fname, null) :
-		    Files.createTempFile(tmpdir, fname, null);
+		    Files.createTempFile(null, null) :
+		    Files.createTempFile(tmpdir, null, null);
+		tasks.add(new OutputFragment(suffixTree, ngrams, tmpfile));
 		fragments.add(tmpfile);
 	    }
-	}
-	catch (IOException ex) {
-	    throw new UncheckedIOException(ex);
-	}
-
-        LOGGER.info("Terms to disk");
-
-	int i = 0;
-	tasks.clear();
-	for (Map.Entry<String, SuffixTree> entry :
-		 suffixTree.getChildren().entrySet()) {
-	    String ngram = entry.getKey();
-	    SuffixTree tree = entry.getValue();
-
-	    Path path = fragments.get(i % fragments.size());
-	    i++;
-
-	    tasks.add(new OutputFragment(path, tree, ngram));
+	    catch (IOException ex) {
+		throw new UncheckedIOException(ex);
+	    }
 	}
 
 	try {
@@ -126,6 +132,9 @@ public class PoolManager extends Manager {
 	    throw new UndeclaredThrowableException(ex);
 	}
 
+	/*
+	 *
+	 */
         LOGGER.info("Disk consolidation");
 
         try (FileChannel dest =
