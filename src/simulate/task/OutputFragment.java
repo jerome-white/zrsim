@@ -6,6 +6,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 
 import tree.SuffixTree;
@@ -40,7 +41,7 @@ public class OutputFragment implements Callable<String> {
     }
 
     public String call() {
-	StringBuffer results = new StringBuffer();
+	StringJoiner results = new StringJoiner(",");
 
         Manager.LOGGER.info("Job size: " + String.valueOf(ngrams.size()));
 
@@ -53,9 +54,7 @@ public class OutputFragment implements Callable<String> {
 		OutputVisitor visitor =
 		    new OutputVisitor(n, appearances, redundants, printStream);
 		root.accept(visitor);
-		results
-		    .append(n)
-		    .append(",");
+		results.add(n);
 	    }
 	}
 	catch (IOException ex) {
