@@ -43,13 +43,12 @@ public class OutputFragment implements Callable<String> {
     public String call() {
 	StringJoiner results = new StringJoiner(",");
 
-        Manager.LOGGER.info("Job size: " + String.valueOf(ngrams.size()));
-
 	try (PrintStream printStream =
 	     new PrintStream(Files.newOutputStream(tmpfile), true)) {
+	    int i = 0; // just for accounting!
 	    for (String n : ngrams) {
 
-                Manager.LOGGER.info(tmpfile.getFileName() + " " + n);
+                Manager.LOGGER.info(++i + "/" + ngrams.size());
 
 		OutputVisitor visitor =
 		    new OutputVisitor(n, appearances, redundants, printStream);
