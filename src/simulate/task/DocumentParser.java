@@ -2,6 +2,7 @@ package simulate.task;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.CharBuffer;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.charset.Charset;
@@ -14,16 +15,16 @@ import simulate.Manager;
 public class DocumentParser implements Callable<String> {
     private int window;
 
-    private SuffixTree tree;
+    private String encoding;
     private Path path;
-    private Charset charset;
+    private SuffixTree tree;
 
     public DocumentParser(SuffixTree tree, int window, Path path) {
         this.tree = tree;
         this.window = window;
 	this.path = path;
 
-	charset = Charset.forName("UTF-8");
+	encoding = System.getProperty("file.encoding");
     }
 
     public String call() {
@@ -38,9 +39,12 @@ public class DocumentParser implements Callable<String> {
                 if (buffer.hasRemaining()) {
                     break;
                 }
-                buffer.flip();
-                tree.add(charset.decode(buffer), document, i);
                 buffer.rewind();
+
+		CharBuffer ngram = Charset.forName(encoding).decode(buffer);
+                tree.add(ngram, document, i);
+
+		buffer.clear();
             }
         }
         catch (IOException ex) {
