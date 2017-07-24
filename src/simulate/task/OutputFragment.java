@@ -10,6 +10,7 @@ import java.util.concurrent.Callable;
 
 import tree.SuffixTree;
 import visitor.OutputVisitor;
+import simulate.Manager;
 
 public class OutputFragment implements Callable<String> {
     private int appearances;
@@ -41,9 +42,14 @@ public class OutputFragment implements Callable<String> {
     public String call() {
 	StringBuffer results = new StringBuffer();
 
+        Manager.LOGGER.info("Job size: " + String.valueOf(ngrams.size()));
+
 	try (PrintStream printStream =
 	     new PrintStream(Files.newOutputStream(tmpfile), true)) {
 	    for (String n : ngrams) {
+
+                Manager.LOGGER.info(tmpfile.getFileName() + " " + n);
+
 		OutputVisitor visitor =
 		    new OutputVisitor(n, appearances, redundants, printStream);
 		root.accept(visitor);
