@@ -40,6 +40,7 @@ public class PoolManager extends Manager {
 
     public PoolManager(int min_gram, int pool) {
 	super(min_gram);
+
 	this.pool = pool;
 	executors = Executors.newFixedThreadPool(pool);
 
