@@ -13,7 +13,7 @@ public class Simulator {
         int max_ngram = Integer.parseInt(args[2]);
         Path output = Paths.get(args[3]);
 
-        Manager.LOGGER.info("Begin");
+        Manager.LOGGER.info("Begin: " + min_ngram + " -- " + max_ngram);
 
         // Manager manager = new StreamManager(min_ngram);
         Manager manager = new PoolManager(min_ngram);
