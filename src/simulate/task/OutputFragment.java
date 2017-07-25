@@ -48,16 +48,20 @@ public class OutputFragment implements Callable<String> {
         try (PrintStream printStream =
              new PrintStream(Files.newOutputStream(tmpfile), true)) {
             int i = 0; // just for accounting!
-            for (String n : ngrams) {
+            for (String ngram : ngrams) {
 
                 Manager.LOGGER.info(tmpfile.getFileName().toString() + " " +
                                     ++i + "/" + ngrams.size());
 
-                OutputVisitor visitor =
-                    new OutputVisitor(n, appearances, redundants, printStream);
-                root.getChildren().get(n).accept(visitor);
+                root
+                    .getChildren()
+                    .get(n)
+                    .accept(new OutputVisitor(ngram,
+                                              appearances,
+                                              redundants,
+                                              printStream));
 
-                results.add(n);
+                results.add(ngram);
             }
         }
         catch (IOException ex) {
