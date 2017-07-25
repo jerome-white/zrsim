@@ -13,25 +13,25 @@ public class ComprehensiveStringWindow extends StringWindow {
     private String string;
 
     public ComprehensiveStringWindow(String string,
-				     int minimum,
-				     int maximum,
-				     boolean report_self) {
+                                     int minimum,
+                                     int maximum,
+                                     boolean report_self) {
         this.string = string;
-	this.minimum = minimum;
-	this.maximum = maximum;
+        this.minimum = minimum;
+        this.maximum = maximum;
         this.report_self = report_self;
 
         left = 0;
         right = minimum;
-	length = string.length();
+        length = string.length();
     }
 
     public ComprehensiveStringWindow(String string, int minimum, int maximum) {
-	this(string, minimum, maximum, false);
+        this(string, minimum, maximum, false);
     }
 
     public ComprehensiveStringWindow(String string, int minimum) {
-	this(string, minimum, string.length());
+        this(string, minimum, string.length());
     }
 
     public ComprehensiveStringWindow(String string) {
@@ -47,8 +47,8 @@ public class ComprehensiveStringWindow extends StringWindow {
 
         right++;
         if (right > length ||
-	    right - left > maximum ||
-	    right == length && left == 0 && !report_self) {
+            right - left > maximum ||
+            right == length && left == 0 && !report_self) {
             left++;
             right = left + minimum;
         }

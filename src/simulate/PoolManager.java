@@ -39,103 +39,103 @@ public class PoolManager extends Manager {
     private List<Callable<String>> tasks;
 
     public PoolManager(int min_gram, int pool) {
-	super(min_gram);
+        super(min_gram);
 
-	this.pool = pool;
-	executors = Executors.newFixedThreadPool(pool);
+        this.pool = pool;
+        executors = Executors.newFixedThreadPool(pool);
 
-	tasks = new ArrayList<Callable<String>>();
+        tasks = new ArrayList<Callable<String>>();
     }
 
     public PoolManager(int min_gram) {
-	this(min_gram, Runtime.getRuntime().availableProcessors());
+        this(min_gram, Runtime.getRuntime().availableProcessors());
     }
 
     public void addDocuments(Path corpus, int max_ngram) {
         LOGGER.info("Adding terms");
 
-	tasks.clear();
-	try (DirectoryStream<Path> stream = Files.newDirectoryStream(corpus)) {
-	    for (Path file : stream) {
-		tasks.add(new DocumentParser(suffixTree, max_ngram, file));
-	    }
-	}
-	catch (IOException ex) {
-	    throw new UncheckedIOException(ex);
-	}
+        tasks.clear();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(corpus)) {
+            for (Path file : stream) {
+                tasks.add(new DocumentParser(suffixTree, max_ngram, file));
+            }
+        }
+        catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
 
-	try {
-	    executors.invokeAll(tasks);
-	}
-	catch (InterruptedException ex) {
-	    throw new UndeclaredThrowableException(ex);
-	}
+        try {
+            executors.invokeAll(tasks);
+        }
+        catch (InterruptedException ex) {
+            throw new UndeclaredThrowableException(ex);
+        }
     }
 
     public void selectTerms() {
         LOGGER.info("Term selection");
 
-	tasks.clear();
-	for (String ngram : suffixTree.getChildren().keySet()) {
-	    tasks.add(new TermSelector(suffixTree, ngram));
-	}
+        tasks.clear();
+        for (String ngram : suffixTree.getChildren().keySet()) {
+            tasks.add(new TermSelector(suffixTree, ngram));
+        }
 
-	try {
-	    executors.invokeAll(tasks);
-	}
-	catch (InterruptedException ex) {
-	    throw new UndeclaredThrowableException(ex);
-	}
+        try {
+            executors.invokeAll(tasks);
+        }
+        catch (InterruptedException ex) {
+            throw new UndeclaredThrowableException(ex);
+        }
     }
 
     public void generate(Path output) {
-	/*
-	 *
-	 */
-	List<String> children = new ArrayList<String>();
-	for (Map.Entry<String, SuffixTree> entry :
-		 suffixTree.getChildren().entrySet()) {
-	    children.add(entry.getKey());
-	}
+        /*
+         *
+         */
+        List<String> children = new ArrayList<String>();
+        for (Map.Entry<String, SuffixTree> entry :
+                 suffixTree.getChildren().entrySet()) {
+            children.add(entry.getKey());
+        }
 
-	/*
-	 *
-	 */
-	Map<String, String> env = System.getenv();
+        /*
+         *
+         */
+        Map<String, String> env = System.getenv();
         Path tmpdir = env.containsKey(SLURM_JOBTMP) ?
             Paths.get(env.get(SLURM_JOBTMP)) : null;
 
-	List<Path> fragments = new ArrayList<Path>();
+        List<Path> fragments = new ArrayList<Path>();
 
-	/*
-	 *
-	 */
-	LOGGER.info("Terms to disk");
+        /*
+         *
+         */
+        LOGGER.info("Terms to disk");
 
-	tasks.clear();
-	for (List<String> ngrams : new SubList<String>(children, pool)) {
-	    try {
-		Path tmpfile = (tmpdir == null) ?
-		    Files.createTempFile(null, null) :
-		    Files.createTempFile(tmpdir, null, null);
-		tasks.add(new OutputFragment(suffixTree, ngrams, tmpfile));
-		fragments.add(tmpfile);
-	    }
-	    catch (IOException ex) {
-		throw new UncheckedIOException(ex);
-	    }
-	}
+        tasks.clear();
+        for (List<String> ngrams : new SubList<String>(children, pool)) {
+            try {
+                Path tmpfile = (tmpdir == null) ?
+                    Files.createTempFile(null, null) :
+                    Files.createTempFile(tmpdir, null, null);
+                tasks.add(new OutputFragment(suffixTree, ngrams, tmpfile));
+                fragments.add(tmpfile);
+            }
+            catch (IOException ex) {
+                throw new UncheckedIOException(ex);
+            }
+        }
 
-	try {
-	    executors.invokeAll(tasks);
-	}
-	catch (InterruptedException ex) {
-	    throw new UndeclaredThrowableException(ex);
-	}
+        try {
+            executors.invokeAll(tasks);
+        }
+        catch (InterruptedException ex) {
+            throw new UndeclaredThrowableException(ex);
+        }
 
-	/*
-	 *
-	 */
+        /*
+         *
+         */
         LOGGER.info("Disk consolidation");
 
         try (FileChannel dest =
@@ -157,6 +157,6 @@ public class PoolManager extends Manager {
     }
 
     public void shutdown() {
-	executors.shutdown();
+        executors.shutdown();
     }
 }

@@ -10,14 +10,14 @@ public class TermSelector implements Callable<String> {
     private String ngram;
 
     public TermSelector(SuffixTree root, String ngram) {
-	this.root = root;
-	this.ngram = ngram;
+        this.root = root;
+        this.ngram = ngram;
     }
 
     public String call() {
-	SuffixTree child = root.getChildren().get(ngram);
-	child.accept(new MarkRedundantVisitor(ngram, root));
+        SuffixTree child = root.getChildren().get(ngram);
+        child.accept(new MarkRedundantVisitor(ngram, root));
 
-	return ngram;
+        return ngram;
     }
 }

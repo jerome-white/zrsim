@@ -21,7 +21,7 @@ public class Simulator {
         manager.addDocuments(corpus, max_ngram);
         manager.selectTerms();
         manager.generate(output);
-	manager.shutdown();
+        manager.shutdown();
 
         Manager.LOGGER.info("Complete");
     }

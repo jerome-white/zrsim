@@ -9,14 +9,14 @@ import util.SubList;
 public class SubListTest {
     @Test
     public void testSingle() {
-	List<Integer> list = new ArrayList<Integer>();
-	for (int i = 0; i < 10; i++) {
-	    list.add(i);
-	}
-	
-	SubList subList = new SubList(list);
-	for i in 
-    }
+        List<Integer> list = new ArrayList<Integer>();
+        for (int i = 0; i < 10; i++) {
+            list.add(i);
+        }
+
+        SubList subList = new SubList(list);
+        for i in
+                  }
 
     @Test
     public void testHead() {

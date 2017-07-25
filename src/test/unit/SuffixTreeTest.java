@@ -27,7 +27,7 @@ public class SuffixTreeTest {
     // @Test
     // public void testCorrectLocation() {
     //     SuffixTree found = suffixTree.find(key);
-    //     Sorte<String> 
+    //     Sorte<String>
     //     assertEquals(found.getLocations().first(), location);
     // }
 }

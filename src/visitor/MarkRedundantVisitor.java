@@ -12,7 +12,7 @@ public class MarkRedundantVisitor implements SuffixTreeVisitor {
     private StringWindow stringWindow;
 
     public MarkRedundantVisitor(String ngram, SuffixTree root) {
-	this.ngram = ngram;
+        this.ngram = ngram;
         this.root = root;
 
         stringWindow = new ComprehensiveStringWindow(ngram, ngram.length()-1);

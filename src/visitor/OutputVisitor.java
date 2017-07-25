@@ -18,9 +18,9 @@ public class OutputVisitor implements SuffixTreeVisitor {
                          boolean redundants,
                          PrintStream printStream,
                          String delimiter) {
-	this.ngram = ngram;
-	this.appearances = appearances;
-	this.redundants = redundants;
+        this.ngram = ngram;
+        this.appearances = appearances;
+        this.redundants = redundants;
         this.printStream = printStream;
         this.delimiter = delimiter;
     }

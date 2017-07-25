@@ -23,7 +23,7 @@ import simulate.task.DocumentParser;
 
 public class StreamManager extends Manager {
     public StreamManager(int min_gram) {
-	super(min_gram);
+        super(min_gram);
     }
 
     public void addDocuments(Path corpus, int max_ngram) {
@@ -32,10 +32,10 @@ public class StreamManager extends Manager {
 
         try {
             Files
-		.list(corpus)
-		.parallel()
-		.forEach(p -> (new DocumentParser(suffixTree, max_ngram, p))
-			 .call());
+                .list(corpus)
+                .parallel()
+                .forEach(p -> (new DocumentParser(suffixTree, max_ngram, p))
+                         .call());
         }
         catch (IOException ex) {
             throw new UncheckedIOException(ex);

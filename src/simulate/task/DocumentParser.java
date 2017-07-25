@@ -22,14 +22,14 @@ public class DocumentParser implements Callable<String> {
     public DocumentParser(SuffixTree tree, int window, Path path) {
         this.tree = tree;
         this.window = window;
-	this.path = path;
+        this.path = path;
 
-	encoding = System.getProperty("file.encoding");
+        encoding = System.getProperty("file.encoding");
     }
 
     public String call() {
-	String document = path.getFileName().toString();
-	Manager.LOGGER.info(document);
+        String document = path.getFileName().toString();
+        Manager.LOGGER.info(document);
 
         try (FileChannel fc = FileChannel.open(path)) {
             ByteBuffer buffer = ByteBuffer.allocate(window);
@@ -41,16 +41,16 @@ public class DocumentParser implements Callable<String> {
                 }
                 buffer.rewind();
 
-		CharBuffer ngram = Charset.forName(encoding).decode(buffer);
+                CharBuffer ngram = Charset.forName(encoding).decode(buffer);
                 tree.add(ngram, document, i);
 
-		buffer.clear();
+                buffer.clear();
             }
         }
         catch (IOException ex) {
-	    throw new UncheckedIOException(ex);
+            throw new UncheckedIOException(ex);
         }
 
-	return document;
+        return document;
     }
 }

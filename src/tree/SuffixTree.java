@@ -54,8 +54,8 @@ public class SuffixTree {
 
     public void add(CharBuffer ngram, String document, int offset) {
         if (ngram.hasRemaining()) {
-	    char[] head = new char[key_length];
-	    ngram.get(head, 0, key_length);
+            char[] head = new char[key_length];
+            ngram.get(head, 0, key_length);
             SuffixTree child = children.computeIfAbsent(String.valueOf(head),
                                                         k -> new SuffixTree());
             child.locations.compute(document, (k, v) -> {
@@ -75,10 +75,10 @@ public class SuffixTree {
         }
 
         if (ngram.length() >= key_length) {
-	    String partition = ngram.substring(0, key_length);
+            String partition = ngram.substring(0, key_length);
             SuffixTree child = children.get(partition);
             if (child != null) {
-		partition = ngram.substring(key_length);
+                partition = ngram.substring(key_length);
                 return child.find(partition);
             }
         }

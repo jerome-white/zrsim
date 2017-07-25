@@ -13,11 +13,11 @@ public class Token {
         this.document = document;
         this.offset = offset;
         this.ngram = ngram;
-	this.delimiter = delimiter;
+        this.delimiter = delimiter;
     }
 
     public Token(String document, int offset, String ngram) {
-	this(document, offset, ngram, ",");
+        this(document, offset, ngram, ",");
     }
 
     public String toString() {
