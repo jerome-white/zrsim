@@ -53,7 +53,7 @@ public class OutputFragment implements Callable<String> {
 
                 root
                     .getChildren()
-                    .get(n)
+                    .get(ngram)
                     .accept(new OutputVisitor(ngram,
                                               appearances,
                                               redundants,
