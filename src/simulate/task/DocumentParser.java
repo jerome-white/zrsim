@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.Callable;
 
-import tree.SuffixTree;
+import util.SuffixTree;
 import simulate.Manager;
 
 public class DocumentParser implements Callable<String> {

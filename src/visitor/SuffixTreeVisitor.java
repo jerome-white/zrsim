@@ -1,6 +1,6 @@
 package visitor;
 
-import tree.SuffixTree;
+import util.SuffixTree;
 
 public interface SuffixTreeVisitor {
     public SuffixTreeVisitor spawn(String ngram);

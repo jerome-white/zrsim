@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 
-import tree.SuffixTree;
+import util.SuffixTree;
 import visitor.OutputVisitor;
 import simulate.Manager;
 
@@ -42,8 +42,6 @@ public class OutputFragment implements Callable<String> {
 
     public String call() {
         StringJoiner results = new StringJoiner(",");
-
-        Manager.LOGGER.info(tmpfile.getFileName().toString());
 
         try (PrintStream printStream =
              new PrintStream(Files.newOutputStream(tmpfile), true)) {

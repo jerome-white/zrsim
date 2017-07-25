@@ -2,7 +2,7 @@ package visitor;
 
 import java.util.NoSuchElementException;
 
-import tree.SuffixTree;
+import util.SuffixTree;
 import util.StringWindow;
 import util.ComprehensiveStringWindow;
 

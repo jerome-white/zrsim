@@ -3,7 +3,7 @@ package simulate;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-import tree.SuffixTree;
+import util.SuffixTree;
 
 public abstract class Manager {
     public final static Logger LOGGER =

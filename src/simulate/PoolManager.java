@@ -26,8 +26,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import tree.SuffixTree;
 import util.SubList;
+import util.SuffixTree;
 import simulate.task.TermSelector;
 import simulate.task.DocumentParser;
 import simulate.task.OutputFragment;

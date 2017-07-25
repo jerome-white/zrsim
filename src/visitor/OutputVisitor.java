@@ -3,7 +3,7 @@ package visitor;
 import java.io.PrintStream;
 
 import util.Token;
-import tree.SuffixTree;
+import util.SuffixTree;
 
 public class OutputVisitor implements SuffixTreeVisitor {
     private String delimiter = ",";

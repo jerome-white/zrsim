@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.concurrent.ConcurrentHashMap;
 
-import tree.SuffixTree;
+import util.SuffixTree;
 import visitor.OutputVisitor;
 import visitor.MarkRedundantVisitor;
 import simulate.task.DocumentParser;

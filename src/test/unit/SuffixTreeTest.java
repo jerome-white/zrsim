@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 
-import tree.SuffixTree;
+import util.SuffixTree;
 
 public class SuffixTreeTest {
     private SuffixTree suffixTree;
