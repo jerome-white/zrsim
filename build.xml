@@ -4,6 +4,8 @@
   <property name="var" location="log"/>
   <property name="build" location="bin"/>
 
+  <property name="workers" value="0"/>
+
   <path id="default_classpath">
     <pathelement path="${java.class.path}"/>
     <pathelement path="${build}"/>
@@ -59,6 +61,7 @@
       <arg value="${min_ngram}"/>
       <arg value="${max_ngram}"/>
       <arg value="${output}"/>
+      <arg value="${workers}"/>
     </java>
   </target>
 
