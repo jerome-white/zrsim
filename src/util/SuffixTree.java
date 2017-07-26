@@ -89,8 +89,8 @@ public class SuffixTree {
     public int appearances() {
         int hits = 0;
 
-        for (String document : locations.keySet()) {
-            hits += locations.get(document).size();
+        for (SortedSet<Integer> offsets : locations.values()) {
+            hits += offsets.size();
         }
 
         return hits;
