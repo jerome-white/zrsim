@@ -15,10 +15,10 @@ public class TermSelector implements Callable<String> {
     }
 
     public String call() {
-	root
-	    .getChildren()
-	    .get(ngram)
-	    .accept(new MarkRedundantVisitor(ngram, root));
+        root
+            .getChildren()
+            .get(ngram)
+            .accept(new MarkRedundantVisitor(ngram, root));
 
         return ngram;
     }
