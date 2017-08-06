@@ -3,11 +3,11 @@ package util;
 import java.util.StringJoiner;
 
 public class Token {
-    private final int offset;
+    protected final int offset;
 
-    private final String document;
-    private final String ngram;
-    private final String delimiter;
+    protected final String document;
+    protected final String ngram;
+    protected final String delimiter;
 
     public Token(String document, int offset, String ngram, String delimiter) {
         this.document = document;
@@ -20,6 +20,18 @@ public class Token {
         this(document, offset, ngram, ",");
     }
 
+    public Token(Token token) {
+        this(token.document, token.offset, token.ngram, token.delimiter);
+    }
+
+    public String getNgram() {
+        return ngram;
+    }
+
+    public String getDocument() {
+        return document;
+    }
+
     public String toString() {
         StringJoiner joiner = new StringJoiner(delimiter);
         joiner
@@ -28,5 +40,19 @@ public class Token {
             .add(String.valueOf(offset));
 
         return joiner.toString();
+    }
+
+    public static Token fromString(String string, String delimiter) {
+        String[] parts = string.split(delimiter);
+
+        String document = parts[0];
+        String ngram = parts[1];
+        int offset = Integer.valueOf(parts[2])/*.intValue()*/;
+
+        return new Token(document, offset, ngram, delimiter);
+    }
+
+    public static Token fromString(String string) {
+        return Token.fromString(string, ",");
     }
 }
