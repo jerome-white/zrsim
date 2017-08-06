@@ -13,6 +13,7 @@ cat <<EOF > $tmp
 EOF
 
 for i in `find . -name '*.java'`; do
+    echo $i
     emacs -batch $i -l $tmp -f emacs-format-function
 done
 
