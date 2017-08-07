@@ -76,6 +76,7 @@
       <arg value="${min_ngram}"/>
       <arg value="${max_ngram}"/>
       <arg value="${output}"/>
+      <arg value="${workers}"/>
     </java>
   </target>
 </project>
