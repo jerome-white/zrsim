@@ -57,7 +57,7 @@ ant slurm \
     -Dmin_ngram=$min_ngram \
     -Dmax_ngram=$i \
     -Dcorpus=\$SLURM_JOBTMP/corpus \
-    -Doutput=$output
+    -Doutput=$output \
     -Dworkers=$workers
 EOF
 
