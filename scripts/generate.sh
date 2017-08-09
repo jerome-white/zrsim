@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source library
+mload
+
 #
 # defaults
 #
@@ -7,13 +10,12 @@ workers=20
 memory=480
 duration=6:00:00
 
-while getopts "w:m:d:p:t:h" OPTION; do
+while getopts "w:m:t:d:h" OPTION; do
     case $OPTION in
 	w) workers=$OPTARG ;;
 	m) memory=$OPTARG ;;
-	d) duration=$OPTARG ;;
-	p) posting=$OPTARG ;;
-	t) trees=$OPTARG ;; # trees=$SCRATCH/zrt/wsj/2017_0719_184233/trees
+	t) duration=$OPTARG ;;
+	d) root=$OPTARG ;; # $SCRATCH/zrt/wsj/2017_0719_184233
         h)
             exit
             ;;
@@ -21,13 +23,10 @@ while getopts "w:m:d:p:t:h" OPTION; do
     esac
 done
 
-module try-load jdk/1.8.0_111
-module try-load apache-ant/1.9.8
-module try-load pbzip2/intel/1.1.13
+log=generate.jobs
+rmlog $log
 
-ant clean compile || exit 1
-
-for i in $trees/*; do
+for i in $root/trees/*; do
     echo -n "$i "
     
     job=`mktemp`
@@ -38,10 +37,7 @@ for i in $trees/*; do
 #!/bin/bash
 
 java generate.MakeTerms \
-    -Xmx`printf "%0.f" $(bc -l <<< "$memory * .95")`g \
-    -XX:+UseParallelGC \
-    -XX:ParallelGCThreads=`expr $workers / 2` \
-    -classpath bin \
+    `jargs $memory $workers` \
     $i $workers \$SLURM_JOBTMP/$ngrams
 
 mkdir --parents $pseudoterms
@@ -63,4 +59,4 @@ EOF
 	--workdir=`pwd` \
 	--job-name=ptgen-$i \
 	$job
-done > generate.jobs
+done > $log

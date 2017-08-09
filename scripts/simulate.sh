@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source library
+mload
+
 #
 # defaults
 #
@@ -15,8 +18,8 @@ while getopts "n:m:s:w:r:d:t:h" OPTION; do
 	s) starting_ngram=$OPTARG ;;
 	w) workers=$OPTARG ;;
 	r) memory=$OPTARG ;;
-	d) duration=$OPTARG ;;
-	t) trees=$OPTARG ;; # trees=$SCRATCH/zrt/wsj/2017_0719_184233/trees
+	t) duration=$OPTARG ;;
+	d) root=$OPTARG ;; # $SCRATCH/zrt/wsj/2017_0719_184233
         h)
             exit
             ;;
@@ -24,20 +27,15 @@ while getopts "n:m:s:w:r:d:t:h" OPTION; do
     esac
 done
 
-module try-load jdk/1.8.0_111
-module try-load apache-ant/1.9.8
-ant clean compile || exit 1
-
-# rm --recursive --force $trees
-# mkdir $trees
-rm --force slurm-*
-
 if [ ! $starting_ngram ]; then
     starting_ngram=$min_ngram
 fi
 
+log=simulate.jobs
+rmlogs $log
+
 for i in `seq $starting_ngram $max_ngram`; do
-    output=$trees/`printf "%02.f" $i`.csv
+    output=$root/trees/`printf "%02.f" $i`.csv
     if [ -e $output ]; then
 	continue
     fi
@@ -53,12 +51,10 @@ tar \
     --directory=\$SLURM_JOBTMP \
     --file=$SCRATCH/zrt/corpus.tar.bz
 
-ant slurm \
-    -Dmin_ngram=$min_ngram \
-    -Dmax_ngram=$i \
-    -Dcorpus=\$SLURM_JOBTMP/corpus \
-    -Doutput=$output \
-    -Dworkers=$workers
+java generate.Simluator \
+    `jargs $memory $workers` \
+    \$SLURM_JOBTMP/corpus $min_ngram $i $output $workers
+
 EOF
 
     sbatch \
@@ -69,6 +65,6 @@ EOF
 	--nodes=1 \
 	--cpus-per-task=$workers \
 	--workdir=`pwd` \
-	--job-name=zrcomp-$i \
+	--job-name=zrsim-$i \
 	$job
-done > jobs
+done > $log

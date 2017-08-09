@@ -38,7 +38,6 @@
     </javac>
   </target>
 
-
   <target name="test" depends="compile" >
     <junit showoutput="true"
            printsummary="yes"
@@ -66,17 +65,17 @@
     </java>
   </target>
 
-  <target name="slurm">
-    <java fork="true" classname="simulate.Simulator">
-      <jvmarg value="-Xmx470g"/>
-      <jvmarg value="-XX:+UseParallelGC"/>
-      <jvmarg value="-XX:ParallelGCThreads=10"/>
-      <classpath refid="default_classpath"/>
-      <arg value="${corpus}"/>
-      <arg value="${min_ngram}"/>
-      <arg value="${max_ngram}"/>
-      <arg value="${output}"/>
-      <arg value="${workers}"/>
-    </java>
-  </target>
+  <!-- <target name="slurm"> -->
+  <!--   <java fork="true" classname="simulate.Simulator"> -->
+  <!--     <jvmarg value="-Xmx470g"/> -->
+  <!--     <jvmarg value="-XX:+UseParallelGC"/> -->
+  <!--     <jvmarg value="-XX:ParallelGCThreads=10"/> -->
+  <!--     <classpath refid="default_classpath"/> -->
+  <!--     <arg value="${corpus}"/> -->
+  <!--     <arg value="${min_ngram}"/> -->
+  <!--     <arg value="${max_ngram}"/> -->
+  <!--     <arg value="${output}"/> -->
+  <!--     <arg value="${workers}"/> -->
+  <!--   </java> -->
+  <!-- </target> -->
 </project>
