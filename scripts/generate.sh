@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source library
+source `dirname $BASH_SOURCE`/library.sh || exit 1
 mload
 
 #
@@ -36,8 +36,7 @@ for i in $root/trees/*; do
     cat <<EOF > $job
 #!/bin/bash
 
-java generate.MakeTerms \
-    `jargs $memory $workers` \
+java `jargs $memory $workers` generate.MakeTerms \
     $i $workers \$SLURM_JOBTMP/$ngrams
 
 mkdir --parents $pseudoterms

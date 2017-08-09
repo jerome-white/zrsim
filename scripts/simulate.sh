@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source library
+source `dirname $BASH_SOURCE`/library.sh || exit 1
 mload
 
 #
@@ -51,8 +51,7 @@ tar \
     --directory=\$SLURM_JOBTMP \
     --file=$SCRATCH/zrt/corpus.tar.bz
 
-java generate.Simluator \
-    `jargs $memory $workers` \
+java `jargs $memory $workers` simulate.Simulator \
     \$SLURM_JOBTMP/corpus $min_ngram $i $output $workers
 
 EOF
