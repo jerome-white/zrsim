@@ -1,4 +1,4 @@
-package simulate.task;
+package exec.task;
 
 import java.io.PrintStream;
 import java.io.IOException;
@@ -9,9 +9,9 @@ import java.util.Collection;
 import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 
+import exec.Simulator;
 import util.SuffixTree;
 import visitor.OutputVisitor;
-import simulate.Simulator;
 
 public class OutputFragment implements Callable<String> {
     private int appearances;

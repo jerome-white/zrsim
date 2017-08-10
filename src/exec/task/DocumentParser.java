@@ -1,4 +1,4 @@
-package simulate.task;
+package exec.task;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -9,8 +9,8 @@ import java.nio.charset.Charset;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.Callable;
 
+import exec.Simulator;
 import util.SuffixTree;
-import simulate.Simulator;
 
 public class DocumentParser implements Callable<String> {
     private int window;
