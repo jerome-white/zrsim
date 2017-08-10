@@ -36,7 +36,7 @@ for i in $root/trees/*; do
     cat <<EOF > $job
 #!/bin/bash
 
-java `jargs $memory $workers` generate.MakeTerms \
+java `jargs $memory $workers` exec.MakeTerms \
     $i $workers \$SLURM_JOBTMP/$ngrams
 
 mkdir --parents $pseudoterms
