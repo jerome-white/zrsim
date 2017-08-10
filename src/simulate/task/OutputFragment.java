@@ -11,7 +11,7 @@ import java.util.concurrent.Callable;
 
 import util.SuffixTree;
 import visitor.OutputVisitor;
-import simulate.Manager;
+import simulate.Simulator;
 
 public class OutputFragment implements Callable<String> {
     private int appearances;
@@ -48,8 +48,11 @@ public class OutputFragment implements Callable<String> {
             int i = 0; // just for accounting!
             for (String ngram : ngrams) {
 
-                Manager.LOGGER.info(tmpfile.getFileName().toString() + " " +
-                                    ++i + "/" + ngrams.size());
+                Simulator.LOGGER.info(tmpfile.getFileName().toString() +
+				      " " +
+				      ++i +
+				      "/" +
+				      ngrams.size());
 
                 root
                     .getChildren()

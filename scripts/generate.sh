@@ -30,8 +30,8 @@ for i in $root/trees/*; do
     echo -n "$i "
     
     job=`mktemp`
-    ngrams=`printf "%02.f" $i`
-    pseudoterms=`dirname $i`/pseudoterms
+    ngrams=`basename $i .csv`
+    pseudoterms=$root/pseudoterms
 
     cat <<EOF > $job
 #!/bin/bash

@@ -54,6 +54,7 @@ tar \
 java `jargs $memory $workers` simulate.Simulator \
     \$SLURM_JOBTMP/corpus $min_ngram $i $output $workers
 
+chmod 444 $output
 EOF
 
     sbatch \

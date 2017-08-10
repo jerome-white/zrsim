@@ -10,7 +10,7 @@ import java.nio.channels.FileChannel;
 import java.util.concurrent.Callable;
 
 import util.SuffixTree;
-import simulate.Manager;
+import simulate.Simulator;
 
 public class DocumentParser implements Callable<String> {
     private int window;
@@ -29,7 +29,7 @@ public class DocumentParser implements Callable<String> {
 
     public String call() {
         String document = path.getFileName().toString();
-        Manager.LOGGER.info(document);
+        Simulator.LOGGER.info(document);
 
         try (FileChannel fc = FileChannel.open(path)) {
             ByteBuffer buffer = ByteBuffer.allocate(window);
