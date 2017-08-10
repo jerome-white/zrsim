@@ -33,10 +33,10 @@ import exec.task.DocumentParser;
 import exec.task.OutputFragment;
 
 public class Simulator {
-    public final static String SLURM_JOBTMP = "SLURM_JOBTMP";    
+    public final static String SLURM_JOBTMP = "SLURM_JOBTMP";
     public final static Logger LOGGER =
         Logger.getLogger(Simulator.class.getName());
-    
+
     public static void main(String[] args) {
         Simulator.LOGGER.setLevel(Level.INFO);
 
@@ -48,18 +48,18 @@ public class Simulator {
 
         Simulator.LOGGER.info("Begin: " + min_ngram + " -- " + max_ngram);
 
-	int procs = Runtime.getRuntime().availableProcessors();
-	if (workers > procs) {
-	    workers = procs;
-	}
+        int procs = Runtime.getRuntime().availableProcessors();
+        if (workers > procs) {
+            workers = procs;
+        }
         ExecutorService executors = Executors.newFixedThreadPool(workers);
 
-	SuffixTree suffixTree = new SuffixTree(min_ngram);	
+        SuffixTree suffixTree = new SuffixTree(min_ngram);
         List<Callable<String>> tasks = new ArrayList<Callable<String>>();
 
-	/*
-	 *
-	 */
+        /*
+         *
+         */
         LOGGER.info("Adding terms");
 
         tasks.clear();
@@ -159,7 +159,7 @@ public class Simulator {
             throw new UncheckedIOException(ex);
         }
 
-	executors.shutdown();	
+        executors.shutdown();
 
         Simulator.LOGGER.info("Complete");
     }

@@ -47,13 +47,13 @@ public class OutputFragment implements Callable<String> {
              new PrintStream(Files.newOutputStream(tmpfile), true)) {
             int i = 0; // just for accounting!
             for (String ngram : ngrams) {
-		
+
                 Simulator
-		    .LOGGER
-		    .info(String.format("%s %d/%d",
-					tmpfile.getFileName().toString(),
-					++i,
-					ngrams.size()));
+                    .LOGGER
+                    .info(String.format("%s %d/%d",
+                                        tmpfile.getFileName().toString(),
+                                        ++i,
+                                        ngrams.size()));
 
                 root
                     .getChildren()
