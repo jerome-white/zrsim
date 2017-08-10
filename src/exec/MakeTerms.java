@@ -13,8 +13,8 @@ import util.SubList;
 import util.TermNamer;
 import util.PseudoTerm;
 import util.ForwardIndex;
-import generate.task.TermCreator;
-import generate.task.TokenCollector;
+import exec.task.TermCreator;
+import exec.task.TokenCollector;
 
 public class MakeTerms {
     public static void main(String[] args) {

@@ -28,9 +28,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import util.SubList;
 import util.SuffixTree;
-import simulate.task.TermSelector;
-import simulate.task.DocumentParser;
-import simulate.task.OutputFragment;
+import exec.task.TermSelector;
+import exec.task.DocumentParser;
+import exec.task.OutputFragment;
 
 public class Simulator {
     public final static String SLURM_JOBTMP = "SLURM_JOBTMP";    
