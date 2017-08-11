@@ -31,7 +31,7 @@ for i in $root/trees/*; do
     
     job=`mktemp`
     ngrams=`basename $i .csv`
-    pseudoterms=$root/pseudoterms
+    pseudoterms=$root/pseudoterms/$ngrams
 
     cat <<EOF > $job
 #!/bin/bash
