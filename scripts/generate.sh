@@ -24,15 +24,14 @@ while getopts "w:m:t:d:h" OPTION; do
 done
 
 log=generate.jobs
-rmlog $log
+rmlogs $log
 
 for i in $root/trees/*; do
-    echo -n "$i "
-    
-    job=`mktemp`
     ngrams=`basename $i .csv`
+    job=`mktemp`
     pseudoterms=$root/pseudoterms/$ngrams
 
+    echo -n "$ngrams "
     cat <<EOF > $job
 #!/bin/bash
 
@@ -56,6 +55,6 @@ EOF
 	--nodes=1 \
 	--cpus-per-task=$workers \
 	--workdir=`pwd` \
-	--job-name=ptgen-$i \
+	--job-name=ptgen-$ngrams \
 	$job
 done > $log
