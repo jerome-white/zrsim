@@ -10,6 +10,7 @@ import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 
 import exec.Simulator;
+import util.LogAgent;
 import util.SuffixTree;
 import visitor.OutputVisitor;
 
@@ -48,7 +49,7 @@ public class OutputFragment implements Callable<String> {
             int i = 0; // just for accounting!
             for (String ngram : ngrams) {
 
-                Simulator
+                LogAgent
                     .LOGGER
                     .info(String.format("%s %d/%d",
                                         tmpfile.getFileName().toString(),

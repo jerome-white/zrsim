@@ -4,12 +4,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.lang.reflect.UndeclaredThrowableException;
 
 import util.SubList;
+import util.LogAgent;
 import util.TermNamer;
 import util.PseudoTerm;
 import util.ForwardIndex;
@@ -21,6 +23,8 @@ public class MakeTerms {
         Path posting = Paths.get(args[0]);
         int workers = Integer.parseInt(args[1]);
         Path output = Paths.get(args[2]);
+
+        LogAgent.LOGGER.setLevel(Level.INFO);
 
         ExecutorService executors = Executors.newFixedThreadPool(workers);
 

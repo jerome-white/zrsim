@@ -13,6 +13,7 @@ import java.util.concurrent.Callable;
 
 import util.Term;
 import util.Token;
+import util.LogAgent;
 import util.TermNamer;
 import util.ForwardIndex;
 
@@ -36,6 +37,8 @@ public class TermCreator implements Callable<String> {
         StringJoiner success = new StringJoiner(",");
 
         for (String document : documents) {
+            LogAgent.LOGGER.info(document);
+
             StringJoiner joiner = new StringJoiner(" ");
 
             for (Token token : index.get(document)) {

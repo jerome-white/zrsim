@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import util.Term;
 import util.Token;
+import util.LogAgent;
 import util.ForwardIndex;
 
 public class TokenCollector implements Callable<String> {
@@ -31,6 +32,10 @@ public class TokenCollector implements Callable<String> {
         try (InputStream in = Files.newInputStream(path);
              InputStreamReader stream = new InputStreamReader(in);
              BufferedReader reader = new BufferedReader(stream)) {
+            String ord = String.valueOf(order);
+
+            LogAgent.LOGGER.info(ord);
+
             for (int i = 0; ; i++) {
                 String line = reader.readLine();
 
@@ -43,7 +48,7 @@ public class TokenCollector implements Callable<String> {
                 }
             }
 
-            return String.valueOf(order);
+            return ord;
         }
         catch (IOException ex) {
             throw new UncheckedIOException(ex);

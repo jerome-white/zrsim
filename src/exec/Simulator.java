@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
@@ -27,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import util.SubList;
+import util.LogAgent;
 import util.SuffixTree;
 import exec.task.TermSelector;
 import exec.task.DocumentParser;
@@ -34,19 +34,16 @@ import exec.task.OutputFragment;
 
 public class Simulator {
     public final static String SLURM_JOBTMP = "SLURM_JOBTMP";
-    public final static Logger LOGGER =
-        Logger.getLogger(Simulator.class.getName());
 
     public static void main(String[] args) {
-        Simulator.LOGGER.setLevel(Level.INFO);
-
         Path corpus = Paths.get(args[0]);
         int min_ngram = Integer.parseInt(args[1]);
         int max_ngram = Integer.parseInt(args[2]);
         Path output = Paths.get(args[3]);
         int workers = Integer.parseInt(args[4]);
 
-        Simulator.LOGGER.info("Begin: " + min_ngram + " -- " + max_ngram);
+        LogAgent.LOGGER.setLevel(Level.INFO);
+        LogAgent.LOGGER.info("Begin: " + min_ngram + " -- " + max_ngram);
 
         int procs = Runtime.getRuntime().availableProcessors();
         if (workers > procs) {
@@ -60,7 +57,7 @@ public class Simulator {
         /*
          *
          */
-        LOGGER.info("Adding terms");
+        LogAgent.LOGGER.info("Adding terms");
 
         tasks.clear();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(corpus)) {
@@ -79,7 +76,7 @@ public class Simulator {
             throw new UndeclaredThrowableException(ex);
         }
 
-        LOGGER.info("Term selection");
+        LogAgent.LOGGER.info("Term selection");
 
         tasks.clear();
         for (String ngram : suffixTree.getChildren().keySet()) {
@@ -114,7 +111,7 @@ public class Simulator {
         /*
          *
          */
-        LOGGER.info("Terms to disk");
+        LogAgent.LOGGER.info("Terms to disk");
 
         tasks.clear();
         for (List<String> ngrams : new SubList<String>(children, workers)) {
@@ -140,7 +137,7 @@ public class Simulator {
         /*
          *
          */
-        LOGGER.info("Disk consolidation");
+        LogAgent.LOGGER.info("Disk consolidation");
 
         try (FileChannel dest =
              FileChannel.open(output,
@@ -161,6 +158,6 @@ public class Simulator {
 
         executors.shutdown();
 
-        Simulator.LOGGER.info("Complete");
+        LogAgent.LOGGER.info("Complete");
     }
 }

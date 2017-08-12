@@ -10,13 +10,14 @@ import java.nio.channels.FileChannel;
 import java.util.concurrent.Callable;
 
 import exec.Simulator;
+import util.LogAgent;
 import util.SuffixTree;
 
 public class DocumentParser implements Callable<String> {
     private int window;
 
-    private String encoding;
     private Path path;
+    private String encoding;
     private SuffixTree tree;
 
     public DocumentParser(SuffixTree tree, int window, Path path) {
@@ -29,7 +30,7 @@ public class DocumentParser implements Callable<String> {
 
     public String call() {
         String document = path.getFileName().toString();
-        Simulator.LOGGER.info(document);
+        LogAgent.LOGGER.info(document);
 
         try (FileChannel fc = FileChannel.open(path)) {
             ByteBuffer buffer = ByteBuffer.allocate(window);
