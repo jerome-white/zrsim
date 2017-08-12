@@ -7,13 +7,21 @@ import java.lang.StringBuilder;
 import java.lang.IllegalArgumentException;
 
 public class PseudoTerm implements TermNamer {
+    private String format;
     private Map<String, Integer> terms;
 
     public PseudoTerm (Iterable<Token> tokens) {
         terms = new HashMap<String, Integer>();
+
         for (Token token : tokens) {
             terms.putIfAbsent(token.getNgram(), terms.size() + 1);
         }
+
+        StringBuilder fmt = new StringBuilder("pt%0");
+        format = fmt
+            .append(String.valueOf(terms.size()).length())
+            .append("d")
+            .toString();
     }
 
     public String get(String ngram) {
@@ -21,10 +29,6 @@ public class PseudoTerm implements TermNamer {
             throw new IllegalArgumentException();
         }
 
-        StringBuilder term = new StringBuilder("pt");
-
-        return term
-            .append(terms.get(ngram))
-            .toString();
+        return String.format(format, terms.get(ngram));
     }
 }
