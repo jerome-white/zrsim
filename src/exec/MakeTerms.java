@@ -33,6 +33,8 @@ public class MakeTerms {
         /*
          * Collect terms
          */
+        LogAgent.LOGGER.info("Term collection");
+
         ForwardIndex index = new ForwardIndex();
 
         for (int i = 0; i < workers; i++) {
@@ -49,16 +51,20 @@ public class MakeTerms {
         /*
          * Create a database to give the terms nice names
          */
-        TermNamer pt = new PseudoTerm(index.termIterator());
+        LogAgent.LOGGER.info("Term database");
+
+        TermNamer termNamer = new PseudoTerm(index.termIterator());
 
         /*
          * Save
          */
+        LogAgent.LOGGER.info("Save to disk");
+
         tasks.clear();
 
         List<String> documents = new ArrayList<String>(index.documents());
         for (List<String> subdocs : new SubList<String>(documents, workers)) {
-            tasks.add(new TermCreator(index, subdocs, pt, output));
+            tasks.add(new TermCreator(index, subdocs, termNamer, output));
         }
 
         try {
