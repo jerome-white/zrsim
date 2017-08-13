@@ -74,6 +74,8 @@ public class MakeTerms {
             throw new UndeclaredThrowableException(ex);
         }
 
+	executors.shutdown();
+
         LogAgent.LOGGER.info("Complete");
     }
 }
