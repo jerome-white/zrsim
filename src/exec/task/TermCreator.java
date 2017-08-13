@@ -37,15 +37,15 @@ public class TermCreator implements Callable<String> {
         StringJoiner success = new StringJoiner(",");
 
         for (String document : documents) {
-            LogAgent.LOGGER.info(document);
-
             StringJoiner joiner = new StringJoiner(" ");
 
+            LogAgent.LOGGER.info(document);
             for (Token token : index.get(document)) {
                 String name = termNamer.get(token.getNgram());
                 Term term = new Term(token, name);
                 joiner.add(term.toString());
             }
+            LogAgent.LOGGER.info(document + " : " + joiner.length());
 
             Path output = root.resolve(document);
             try (PrintStream printStream =
