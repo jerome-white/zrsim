@@ -35,8 +35,11 @@ for i in $root/trees/*; do
     cat <<EOF > $job
 #!/bin/bash
 
+output=\$SLURM_JOBTMP/$ngrams
+
+mkdir --parents \$output
 java `jargs $memory $workers` exec.MakeTerms \
-    $i $workers \$SLURM_JOBTMP/$ngrams
+    $i $workers \$output
 
 mkdir --parents $pseudoterms
 tar \
@@ -57,4 +60,5 @@ EOF
 	--workdir=`pwd` \
 	--job-name=ptgen-$ngrams \
 	$job
+    exit
 done > $log
