@@ -48,7 +48,6 @@ public class OutputFragment implements Callable<String> {
              new PrintStream(Files.newOutputStream(tmpfile), true)) {
             int i = 0; // just for accounting!
             for (String ngram : ngrams) {
-
                 LogAgent
                     .LOGGER
                     .info(String.format("%s %d/%d",
