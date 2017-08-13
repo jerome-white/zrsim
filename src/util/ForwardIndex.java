@@ -4,8 +4,8 @@ import java.lang.Iterable;
 import java.util.Set;
 import java.util.List;
 import java.util.Iterator;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Consumer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -60,8 +60,10 @@ public class ForwardIndex {
         add(token.getDocument(), token);
     }
 
-    public Collection<Token> get(String document) {
-        return index.get(document);
+    public void forEachToken(String document, Consumer<Token> consumer) {
+        for (Token token : index.get(document)) {
+            consumer.accept(token);
+        }
     }
 
     public Iterable<Token> termIterator() {
