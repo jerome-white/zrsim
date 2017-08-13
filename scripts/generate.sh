@@ -60,5 +60,4 @@ EOF
 	--workdir=`pwd` \
 	--job-name=ptgen-$ngrams \
 	$job
-    exit
 done > $log
