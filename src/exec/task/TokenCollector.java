@@ -1,7 +1,7 @@
 package exec.task;
 
 import java.io.InputStream;
-import java.io.BufferedReader;
+import java.io.LineNumberReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -17,38 +17,40 @@ import util.LogAgent;
 import util.ForwardIndex;
 
 public class TokenCollector implements Callable<String> {
-    private int order;
+    private int focus;
+    private int block;
 
-    private ForwardIndex index;
     private Path path;
+    private ForwardIndex index;
 
-    public TokenCollector(ForwardIndex index, Path path, int order) {
+    public TokenCollector(ForwardIndex index, Path path, int focus, int block){
         this.index = index;
         this.path = path;
-        this.order = order;
+        this.focus = focus;
+        this.block = block;
     }
 
     public String call() {
         try (InputStream in = Files.newInputStream(path);
              InputStreamReader stream = new InputStreamReader(in);
-             BufferedReader reader = new BufferedReader(stream)) {
-            String ord = String.valueOf(order);
+             LineNumberReader reader = new LineNumberReader(stream)) {
+            String order = String.valueOf(focus);
 
-            LogAgent.LOGGER.info(ord);
+            LogAgent.LOGGER.info(order);
 
-            for (int i = 0; ; i++) {
+            for (int i = focus; ; ) {
                 String line = reader.readLine();
-
                 if (line == null) {
                     break;
                 }
 
-                if (i % order == 0) {
+                if (reader.getLineNumber() - 1 == i) {
                     index.add(Token.fromString(line));
+                    i += block;
                 }
             }
 
-            return ord;
+            return order;
         }
         catch (IOException ex) {
             throw new UncheckedIOException(ex);

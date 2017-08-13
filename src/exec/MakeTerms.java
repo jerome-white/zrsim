@@ -38,7 +38,7 @@ public class MakeTerms {
         ForwardIndex index = new ForwardIndex();
 
         for (int i = 0; i < workers; i++) {
-            tasks.add(new TokenCollector(index, posting, i));
+            tasks.add(new TokenCollector(index, posting, i, workers));
         }
 
         try {
@@ -73,5 +73,7 @@ public class MakeTerms {
         catch (InterruptedException ex) {
             throw new UndeclaredThrowableException(ex);
         }
+
+        LogAgent.LOGGER.info("Complete");
     }
 }
