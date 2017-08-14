@@ -10,11 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ForwardIndex {
-    private class TermIterator implements Iterable<Token>, Iterator<Token> {
-        Iterator<String> documentIterator;
+    private class TokenIterator implements Iterable<Token>, Iterator<Token> {
         Iterator<Token> tokenIterator;
+        Iterator<String> documentIterator;	
 
-        public TermIterator() {
+        public TokenIterator() {
             documentIterator = index.keySet().iterator();
             tee();
         }
@@ -66,8 +66,8 @@ public class ForwardIndex {
         }
     }
 
-    public Iterable<Token> termIterator() {
-        return new TermIterator();
+    public Iterable<Token> tokenIterator() {
+        return new TokenIterator();
     }
 
     public Set<String> documents() {

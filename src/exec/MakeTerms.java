@@ -53,7 +53,7 @@ public class MakeTerms {
          */
         LogAgent.LOGGER.info("Term database");
 
-        TermNamer termNamer = new PseudoTerm(index.termIterator());
+        TermNamer termNamer = new PseudoTerm(index.tokenIterator());
 
         /*
          * Save
