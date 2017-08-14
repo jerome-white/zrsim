@@ -1,18 +1,19 @@
 package util;
 
 import java.lang.Iterable;
+import java.util.Map;
 import java.util.Set;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Collections;
 import java.util.function.Consumer;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ForwardIndex {
     private class TokenIterator implements Iterable<Token>, Iterator<Token> {
         Iterator<Token> tokenIterator;
-        Iterator<String> documentIterator;	
+        Iterator<String> documentIterator;
 
         public TokenIterator() {
             documentIterator = index.keySet().iterator();
@@ -44,15 +45,15 @@ public class ForwardIndex {
         }
     }
 
-    private ConcurrentHashMap<String, ConcurrentLinkedQueue<Token>> index;
+    private Map<String, List<Token>> index;
 
     public ForwardIndex() {
-        index = new ConcurrentHashMap<String, ConcurrentLinkedQueue<Token>>();
+        index = new HashMap<String, List<Token>>();
     }
 
     public void add(String document, Token token) {
         index
-            .computeIfAbsent(document, k -> new ConcurrentLinkedQueue<Token>())
+            .computeIfAbsent(document, k -> new LinkedList<Token>())
             .add(token);
     }
 
@@ -72,5 +73,19 @@ public class ForwardIndex {
 
     public Set<String> documents() {
         return index.keySet();
+    }
+
+    public void fold(ForwardIndex index) {
+        index.index.forEach((doc, tokens) -> {
+                this.index.merge(doc, tokens, (oldTokens, newTokens) -> {
+                        if (oldTokens == null) {
+                            return new LinkedList<Token>(newTokens);
+                        }
+                        else {
+                            oldTokens.addAll(newTokens);
+                            return oldTokens;
+                        }
+                    });
+            });
     }
 }

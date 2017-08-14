@@ -2,12 +2,15 @@ package exec;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.logging.Level;
+import java.util.concurrent.Future;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ExecutionException;
 import java.lang.reflect.UndeclaredThrowableException;
 
 import util.SubList;
@@ -28,53 +31,53 @@ public class MakeTerms {
 
         ExecutorService executors = Executors.newFixedThreadPool(workers);
 
-        List<Callable<String>> tasks = new ArrayList<Callable<String>>();
+        List<Callable<ForwardIndex>> t1 =
+            new LinkedList<Callable<ForwardIndex>>();
 
         /*
          * Collect terms
          */
         LogAgent.LOGGER.info("Term collection");
 
-        ForwardIndex index = new ForwardIndex();
-
         for (int i = 0; i < workers; i++) {
-            tasks.add(new TokenCollector(index, posting, i, workers));
+            t1.add(new TokenCollector(posting, i, workers));
         }
 
         try {
-            executors.invokeAll(tasks);
+            List<Future<ForwardIndex>> result = executors.invokeAll(t1);
+
+            ForwardIndex index = new ForwardIndex();
+
+            for (Future<ForwardIndex> future : result) {
+                index.fold(future.get());
+            }
+
+            /*
+             * Create a database to give the terms nice names
+             */
+            LogAgent.LOGGER.info("Term database");
+
+            TermNamer termNamer = new PseudoTerm(index.tokenIterator());
+
+            /*
+             * Save
+             */
+            LogAgent.LOGGER.info("Save to disk");
+
+            List<Callable<String>> t2 = new LinkedList<Callable<String>>();
+            for (String document : index.documents()) {
+                t2.add(new TermCreator(index, document, termNamer, output));
+            }
+            executors.invokeAll(t2);
         }
         catch (InterruptedException ex) {
             throw new UndeclaredThrowableException(ex);
         }
-
-        /*
-         * Create a database to give the terms nice names
-         */
-        LogAgent.LOGGER.info("Term database");
-
-        TermNamer termNamer = new PseudoTerm(index.tokenIterator());
-
-        /*
-         * Save
-         */
-        LogAgent.LOGGER.info("Save to disk");
-
-        tasks.clear();
-
-        List<String> documents = new ArrayList<String>(index.documents());
-        for (List<String> subdocs : new SubList<String>(documents, workers)) {
-            tasks.add(new TermCreator(index, subdocs, termNamer, output));
-        }
-
-        try {
-            executors.invokeAll(tasks);
-        }
-        catch (InterruptedException ex) {
+        catch (ExecutionException ex) {
             throw new UndeclaredThrowableException(ex);
         }
 
-	executors.shutdown();
+        executors.shutdown();
 
         LogAgent.LOGGER.info("Complete");
     }

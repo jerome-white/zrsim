@@ -9,31 +9,29 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.StringJoiner;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 
 import util.Term;
 import util.Token;
 import util.LogAgent;
 import util.ForwardIndex;
 
-public class TokenCollector implements Callable<String> {
+public class TokenCollector implements Callable<ForwardIndex> {
     private int focus;
     private int block;
 
     private Path path;
-    private ForwardIndex index;
 
-    public TokenCollector(ForwardIndex index, Path path, int focus, int block){
-        this.index = index;
+    public TokenCollector(Path path, int focus, int block) {
         this.path = path;
         this.focus = focus;
         this.block = block;
     }
 
-    public String call() {
+    public ForwardIndex call() {
         try (InputStream in = Files.newInputStream(path);
              InputStreamReader stream = new InputStreamReader(in);
              LineNumberReader reader = new LineNumberReader(stream)) {
+            ForwardIndex index = new ForwardIndex();
             String order = String.valueOf(focus);
 
             LogAgent.LOGGER.info(order);
@@ -50,7 +48,7 @@ public class TokenCollector implements Callable<String> {
                 }
             }
 
-            return order;
+            return index;
         }
         catch (IOException ex) {
             throw new UncheckedIOException(ex);
