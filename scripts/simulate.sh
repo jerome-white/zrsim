@@ -52,7 +52,7 @@ tar \
     --file=$SCRATCH/zrt/corpus.tar.bz
 
 java `jargs $memory $workers` exec.Simulator \
-    \$SLURM_JOBTMP/corpus $min_ngram $i $output $workers
+    \$SLURM_JOBTMP/corpus $min_ngram $i $output $workers \$SLURM_JOBTMP
 
 chmod 444 $output
 EOF
