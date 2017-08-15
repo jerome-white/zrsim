@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.NoSuchElementException;
+import java.util.function.BiConsumer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -16,7 +17,16 @@ public class SuffixTree {
     private final int key_length;
 
     private AtomicBoolean redundant;
+
+    /*
+     * Mapping from (partial) n-gram to suffix tree.
+     */
     private ConcurrentHashMap<String, SuffixTree> children;
+
+    /*
+     * Mapping from document to offset. Corresponds to n-gram
+     * represented by this level in the overall tree.
+     */
     private ConcurrentHashMap<String, SortedSet<Integer>> locations;
 
     public SuffixTree(int key_length) {
@@ -31,12 +41,13 @@ public class SuffixTree {
         this(1);
     }
 
-    public ConcurrentHashMap<String, SuffixTree> getChildren() {
-        return children;
+    public void forEachChild(BiConsumer<String, SuffixTree> consumer) {
+        children.forEach((k, v) -> consumer.accept(k, v));
     }
 
-    public ConcurrentHashMap<String, SortedSet<Integer>> getLocations() {
-        return locations;
+    public void
+        forEachLocation(BiConsumer<String, SortedSet<Integer>> consumer) {
+        locations.forEach((k, v) -> consumer.accept(k, v));
     }
 
     public boolean isRedundant() {
