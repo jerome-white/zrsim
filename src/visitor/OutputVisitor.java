@@ -50,9 +50,9 @@ public class OutputVisitor implements SuffixTreeVisitor {
     public void visit(SuffixTree node) {
         if (node.appearances() >= appearances &&
             (redundants || !redundants && !node.isRedundant())) {
-            node.getLocations().forEach((document, locations) -> {
-                    for (Integer offset : locations) {
-                        Token token = new Token(document, offset, ngram);
+            node.forEachLocation((t, u) -> {
+                    for (Integer offset : u) {
+                        Token token = new Token(t, offset, ngram);
                         printStream.println(token.toString());
                     }
                 });
