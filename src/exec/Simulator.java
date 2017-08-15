@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import util.LogAgent;
 import util.SuffixTree;
 import exec.task.DocumentParser;
+import exec.task.generator.TaskGenerator;
 import exec.task.generator.FragmentGenerator;
 import exec.task.generator.SelectionGenerator;
 
@@ -73,10 +74,10 @@ public class Simulator {
          */
         LogAgent.LOGGER.info("Term selection");
 
-        SelectionGenerator selector = new SelectionGenerator(suffixTree);
-        suffixTree.forEachChild(selector);
+        TaskGenerator generator = new SelectionGenerator(suffixTree);
+        suffixTree.forEachChild(generator);
         try {
-            executors.invokeAll(selector.getTasks());
+            executors.invokeAll(generator.getTasks());
         }
         catch (InterruptedException ex) {
             throw new UndeclaredThrowableException(ex);
@@ -89,14 +90,14 @@ public class Simulator {
          */
         LogAgent.LOGGER.info("Terms to disk");
 
-        FragmentGenerator fragmentor = new FragmentGenerator();
-        suffixTree.forEachChild(fragmentor);
+        generator = new FragmentGenerator();
+        suffixTree.forEachChild(generator);
 
         StreamStorageThreadFactory factory =
             new StreamStorageThreadFactory(tmpdir);
         executors = Executors.newFixedThreadPool(workers, factory);
         try {
-            executors.invokeAll(fragmentor.getTasks());
+            executors.invokeAll(generator.getTasks());
         }
         catch (InterruptedException ex) {
             throw new UndeclaredThrowableException(ex);
