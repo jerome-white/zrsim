@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
 import util.Term;
-import util.Token;
 import util.LogAgent;
 import util.TermNamer;
 import util.ForwardIndex;

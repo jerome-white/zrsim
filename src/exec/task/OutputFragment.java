@@ -6,11 +6,8 @@ import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 
-import exec.Simulator;
-import util.LogAgent;
 import util.SuffixTree;
 import visitor.OutputVisitor;
 
@@ -18,7 +15,6 @@ public class OutputFragment implements Callable<String> {
     private int appearances;
     private boolean redundants;
 
-    private Path path;
     private Path tmpfile;
     private String ngram;
     private SuffixTree root;

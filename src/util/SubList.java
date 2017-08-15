@@ -3,7 +3,6 @@ package util;
 import java.lang.Math;
 import java.lang.Iterable;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 public class SubList<T> implements Iterator<List<T>>, Iterable<List<T>> {

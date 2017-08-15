@@ -1,31 +1,22 @@
 package exec;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.UncheckedIOException;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.nio.file.DirectoryStream;
 import java.nio.file.StandardOpenOption;
 import java.nio.channels.FileChannel;
-import java.lang.IllegalStateException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Map;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
-import util.SubList;
 import util.LogAgent;
 import util.SuffixTree;
 import exec.task.DocumentParser;

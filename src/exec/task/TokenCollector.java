@@ -7,10 +7,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 
-import util.Term;
 import util.Token;
 import util.LogAgent;
 import util.ForwardIndex;

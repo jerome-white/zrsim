@@ -2,7 +2,6 @@ package exec;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.logging.Level;
@@ -13,7 +12,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ExecutionException;
 import java.lang.reflect.UndeclaredThrowableException;
 
-import util.SubList;
 import util.LogAgent;
 import util.TermNamer;
 import util.PseudoTerm;

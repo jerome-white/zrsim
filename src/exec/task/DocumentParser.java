@@ -9,7 +9,6 @@ import java.nio.charset.Charset;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.Callable;
 
-import exec.Simulator;
 import util.LogAgent;
 import util.SuffixTree;
 

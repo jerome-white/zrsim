@@ -1,7 +1,5 @@
 package util;
 
-import java.util.Iterator;
-
 public class OuterStringWindow extends StringWindow {
     private String string;
     private int chunk;
