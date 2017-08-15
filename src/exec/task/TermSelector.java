@@ -6,8 +6,8 @@ import util.SuffixTree;
 import visitor.MarkRedundantVisitor;
 
 public class TermSelector implements Callable<String> {
-    private SuffixTree root;
     private String ngram;
+    private SuffixTree root;
 
     public TermSelector(SuffixTree root, String ngram) {
         this.root = root;
@@ -15,10 +15,7 @@ public class TermSelector implements Callable<String> {
     }
 
     public String call() {
-        root
-            .getChildren()
-            .get(ngram)
-            .accept(new MarkRedundantVisitor(ngram, root));
+        root.accept(new MarkRedundantVisitor(ngram, root));
 
         return ngram;
     }
