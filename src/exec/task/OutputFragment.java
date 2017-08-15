@@ -38,17 +38,19 @@ public class OutputFragment implements Callable<String> {
     }
 
     public String call() {
-        try (OutputStream output = Files.newOutputStream(tmpfile);
-             PrintStream printStream = new PrintStream(output, true)) {
-            root.accept(new OutputVisitor(ngram,
-                                          appearances,
-                                          redundants,
-                                          printStream));
+        synchronized(tmpfile) {
+            try (OutputStream output = Files.newOutputStream(tmpfile);
+                 PrintStream printStream = new PrintStream(output, true)) {
+                root.accept(new OutputVisitor(ngram,
+                                              appearances,
+                                              redundants,
+                                              printStream));
 
-            return ngram;
-        }
-        catch (IOException ex) {
-            throw new UncheckedIOException(ex);
+                return ngram;
+            }
+            catch (IOException ex) {
+                throw new UncheckedIOException(ex);
+            }
         }
     }
 }
