@@ -24,8 +24,6 @@ import exec.task.generator.FragmentGenerator;
 import exec.task.generator.SelectionGenerator;
 
 public class Simulator {
-    public final static String SLURM_JOBTMP = "SLURM_JOBTMP";
-
     public static void main(String[] args) {
         /*
          *
@@ -35,6 +33,7 @@ public class Simulator {
         int max_ngram = Integer.parseInt(args[2]);
         Path output = Paths.get(args[3]);
         int workers = Integer.parseInt(args[4]);
+        Path tmpdir = Paths.get(args[5]);
 
         LogAgent.LOGGER.setLevel(Level.INFO);
         LogAgent.LOGGER.info("Begin: " + min_ngram + " -- " + max_ngram);
@@ -74,7 +73,7 @@ public class Simulator {
          */
         LogAgent.LOGGER.info("Term selection");
 
-        SelectionGenerator selector = new SelectionGenerator();
+        SelectionGenerator selector = new SelectionGenerator(suffixTree);
         suffixTree.forEachChild(selector);
         try {
             executors.invokeAll(selector.getTasks());
@@ -83,35 +82,19 @@ public class Simulator {
             throw new UndeclaredThrowableException(ex);
         }
 
+        executors.shutdown();
+
         /*
          *
          */
         LogAgent.LOGGER.info("Terms to disk");
 
-        /*
-         * Create temporary (fragment) files.
-         */
-        Map<String, String> env = System.getenv();
-        Path tmpdir = env.containsKey(SLURM_JOBTMP) ?
-            Paths.get(env.get(SLURM_JOBTMP)) : null;
-
-        LinkedList<Path> tmpfiles = new LinkedList<Path>();
-
-        try {
-            for (int i = 0; i < workers; i++) {
-                Path tmpfile = (tmpdir == null) ?
-                    Files.createTempFile(null, null) :
-                    Files.createTempFile(tmpdir, null, null);
-                tmpfiles.add(tmpfile);
-            }
-        }
-        catch (IOException ex) {
-            throw new UncheckedIOException(ex);
-        }
-
-        FragmentGenerator fragmentor = new FragmentGenerator(tmpfiles);
+        FragmentGenerator fragmentor = new FragmentGenerator();
         suffixTree.forEachChild(fragmentor);
 
+        StreamStorageThreadFactory factory =
+            new StreamStorageThreadFactory(tmpdir);
+        executors = Executors.newFixedThreadPool(workers, factory);
         try {
             executors.invokeAll(fragmentor.getTasks());
         }
@@ -129,7 +112,7 @@ public class Simulator {
                               StandardOpenOption.WRITE,
                               StandardOpenOption.CREATE,
                               StandardOpenOption.TRUNCATE_EXISTING)) {
-            for (Path input : tmpfiles) {
+            for (Path input : factory) {
                 try (FileChannel src =
                      FileChannel.open(input,
                                       StandardOpenOption.DELETE_ON_CLOSE)) {

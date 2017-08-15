@@ -8,21 +8,13 @@ import util.SuffixTree;
 import exec.task.OutputFragment;
 
 public class FragmentGenerator extends TaskGenerator {
-    private List<Path> tmpfiles;
     private Iterator<Path> iterator;
 
-    public FragmentGenerator(List<Path> tmpfiles) {
+    public FragmentGenerator() {
         super();
-
-        this.tmpfiles = tmpfiles;
-        iterator = tmpfiles.iterator();
     }
 
     public void accept(String t, SuffixTree u) {
-        if (!iterator.hasNext()) {
-            iterator = tmpfiles.iterator();
-        }
-
-        addTask(new OutputFragment(u, t, iterator.next()));
+        addTask(new OutputFragment(u, t));
     }
 }
