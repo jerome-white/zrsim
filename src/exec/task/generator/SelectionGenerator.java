@@ -13,6 +13,6 @@ public class SelectionGenerator extends TaskGenerator {
     }
 
     public void accept(String t, SuffixTree u) {
-        addTask(new TermSelector(root, t));
+        addTask(new TermSelector(root, u, t));
     }
 }
