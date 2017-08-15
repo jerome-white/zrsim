@@ -1,7 +1,6 @@
 package util;
 
 import java.lang.Math;
-import java.util.Iterator;
 
 public class ComprehensiveStringWindow extends StringWindow {
     private int left;

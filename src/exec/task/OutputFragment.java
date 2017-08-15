@@ -1,9 +1,6 @@
 package exec.task;
 
 import java.io.PrintStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
 import util.SuffixTree;
