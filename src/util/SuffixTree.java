@@ -123,12 +123,12 @@ public class SuffixTree {
 
         for (String document : locations.keySet()) {
             /*
-             * Should appear in more documents.
+             * Should appear in at least as many documents.
              */
-            SortedSet<Integer> theirOffsets = node.locations.get(document);
-            if (theirOffsets == null) {
+            if (!node.locations.containsKey(document)) {
                 return false;
             }
+            SortedSet<Integer> theirOffsets = node.locations.get(document);
 
             /*
              * An appearance is a subset if the offset is either
