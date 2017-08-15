@@ -8,14 +8,16 @@ import visitor.MarkRedundantVisitor;
 public class TermSelector implements Callable<String> {
     private String ngram;
     private SuffixTree root;
+    private SuffixTree child;
 
-    public TermSelector(SuffixTree root, String ngram) {
+    public TermSelector(SuffixTree root, SuffixTree child, String ngram) {
         this.root = root;
+        this.child = child;
         this.ngram = ngram;
     }
 
     public String call() {
-        root.accept(new MarkRedundantVisitor(ngram, root));
+        child.accept(new MarkRedundantVisitor(ngram, root));
 
         return ngram;
     }
