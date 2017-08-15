@@ -15,7 +15,7 @@ public class MarkRedundantVisitor implements SuffixTreeVisitor {
         this.ngram = ngram;
         this.root = root;
 
-        stringWindow = new ComprehensiveStringWindow(ngram, ngram.length()-1);
+        stringWindow = new ComprehensiveStringWindow(ngram);
     }
 
     public SuffixTreeVisitor spawn(String ngram) {
@@ -23,6 +23,8 @@ public class MarkRedundantVisitor implements SuffixTreeVisitor {
     }
 
     public void visit(SuffixTree node) {
+        assert root.find(ngram) == node;
+
         for (String partial : stringWindow) {
             try {
                 SuffixTree current = root.find(partial);
