@@ -44,8 +44,12 @@ public class MakeTerms {
         try {
             List<Future<ForwardIndex>> result = executors.invokeAll(t1);
 
-            ForwardIndex index = new ForwardIndex();
+            /*
+             * Combine the indices
+             */
+            LogAgent.LOGGER.info("Combining indexes");
 
+            ForwardIndex index = new ForwardIndex();
             for (Future<ForwardIndex> future : result) {
                 index.fold(future.get());
             }
