@@ -6,30 +6,20 @@ import util.Token;
 import util.SuffixTree;
 
 public class OutputVisitor implements SuffixTreeVisitor {
-    private String delimiter = ",";
-
     private int appearances;
     private boolean redundants;
+
     private String ngram;
     private PrintStream printStream;
 
     public OutputVisitor(String ngram,
                          int appearances,
                          boolean redundants,
-                         PrintStream printStream,
-                         String delimiter) {
+                         PrintStream printStream) {
         this.ngram = ngram;
         this.appearances = appearances;
         this.redundants = redundants;
         this.printStream = printStream;
-        this.delimiter = delimiter;
-    }
-
-    public OutputVisitor(String ngram,
-                         int appearances,
-                         boolean redundants,
-                         PrintStream printStream) {
-        this(ngram, appearances, redundants, printStream, ",");
     }
 
     public OutputVisitor(String ngram, int appearances, boolean redundants) {
