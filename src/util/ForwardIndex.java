@@ -51,14 +51,24 @@ public class ForwardIndex {
         index = new HashMap<String, List<Token>>();
     }
 
-    public void add(String document, Token token) {
-        index
-            .computeIfAbsent(document, k -> new LinkedList<Token>())
-            .add(token);
+    private List<Token> seed(String document) {
+        return index.computeIfAbsent(document, k -> new LinkedList<Token>());
     }
 
     public void add(Token token) {
         add(token.getDocument(), token);
+    }
+
+    public void add(String document, Token token) {
+        seed(document).add(token);
+    }
+
+    public void add(String document, List<Token> tokens) {
+        seed(document).addAll(tokens);
+    }
+
+    public void fold(ForwardIndex index) {
+        index.index.forEach((k, v) -> add(k, v));
     }
 
     public void forEachToken(String document, Consumer<Token> consumer) {
@@ -73,19 +83,5 @@ public class ForwardIndex {
 
     public Set<String> documents() {
         return index.keySet();
-    }
-
-    public void fold(ForwardIndex index) {
-        index.index.forEach((doc, tokens) -> {
-                this.index.merge(doc, tokens, (oldTokens, newTokens) -> {
-                        if (oldTokens == null) {
-                            return new LinkedList<Token>(newTokens);
-                        }
-                        else {
-                            oldTokens.addAll(newTokens);
-                            return oldTokens;
-                        }
-                    });
-            });
     }
 }
