@@ -38,9 +38,14 @@ public class TermCreator implements Callable<String> {
             index.forEachToken(document, t -> {
                     Term term = new Term(t, termNamer.get(t.getNgram()));
                     String line = term.toString() + "\n";
-                    out.write(line.getBytes(StandardCharsets.UTF_8));
+		    try {
+			out.write(line.getBytes(StandardCharsets.UTF_8));
+		    }
+		    catch (IOException ex) {
+			throw new UncheckedIOException(ex);
+		    }
                 });
-        }
+	    }
         catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
