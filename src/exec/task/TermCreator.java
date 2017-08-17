@@ -1,10 +1,11 @@
 package exec.task;
 
-import java.io.PrintStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 
 import util.Term;
@@ -33,12 +34,11 @@ public class TermCreator implements Callable<String> {
 
         Path output = root.resolve(document);
 
-        try (PrintStream printStream =
-             new PrintStream(Files.newOutputStream(output), true)) {
+        try (OutputStream out = Files.newOutputStream(output)) {
             index.forEachToken(document, t -> {
-                    String name = termNamer.get(t.getNgram());
-                    Term term = new Term(t, name);
-                    printStream.println(term);
+                    Term term = new Term(t, termNamer.get(t.getNgram()));
+                    String line = term.toString() + "\n";
+                    out.write(line.getBytes(StandardCharsets.UTF_8));
                 });
         }
         catch (IOException ex) {
