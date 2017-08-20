@@ -14,7 +14,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 
 import util.LogAgent;
 import util.TermNamer;
-import util.PseudoTerm;
+import util.PseudoTermNamer;
 import util.ForwardIndex;
 import exec.task.TermCreator;
 import exec.task.TokenCollector;
@@ -61,31 +61,33 @@ public class MakeTerms {
                     index.fold(i);
                 }
             }
-            catch (InterruptedException | ExecutionException ex) {
-                throw new UndeclaredThrowableException(ex);
-            }
+        }
+        catch (InterruptedException | ExecutionException ex) {
+            throw new UndeclaredThrowableException(ex);
+        }
 
-            /*
-             * Create a database to give the terms nice names
-             */
-            LogAgent.LOGGER.info("Term database");
+        /*
+         * Create a database to give the terms nice names
+         */
+        LogAgent.LOGGER.info("Term database");
 
-            TermNamer termNamer = new PseudoTerm(index.tokenIterator());
+        TermNamer termNamer = new PseudoTermNamer(index.tokenIterator());
 
-            /*
-             * Save
-             */
-            LogAgent.LOGGER.info("Save to disk");
+        /*
+         * Save
+         */
+        LogAgent.LOGGER.info("Save to disk");
 
-            List<Callable<String>> creationTasks =
-                new LinkedList<Callable<String>>();
-            for (String document : index.documents()) {
-                TermCreator creator = new TermCreator(index,
-                                                      document,
-                                                      termNamer,
-                                                      output);
-                creationTasks.add(creator);
-            }
+        List<Callable<String>> creationTasks =
+            new LinkedList<Callable<String>>();
+        for (String document : index.documents()) {
+            TermCreator creator = new TermCreator(index,
+                                                  document,
+                                                  termNamer,
+                                                  output);
+            creationTasks.add(creator);
+        }
+        try {
             executors.invokeAll(creationTasks);
         }
         catch (InterruptedException ex) {

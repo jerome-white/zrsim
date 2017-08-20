@@ -1,5 +1,7 @@
 package util.entity;
 
+import java.util.List;
+import java.util.Arrays;
 import java.util.StringJoiner;
 
 public abstract class Entity {
@@ -9,7 +11,7 @@ public abstract class Entity {
     private final String ngram;
     protected final List<String> fields;
 
-    public class Entity(String document, String ngram) {
+    public Entity(String document, String ngram) {
         this.document = document;
         this.ngram = ngram;
 
@@ -34,7 +36,7 @@ public abstract class Entity {
         return joiner.toString();
     }
 
-    public StringJoiner compose() {
+    protected StringJoiner compose() {
         StringJoiner composition = new StringJoiner(Entity.DELIMITER);
 
         return composition

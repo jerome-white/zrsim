@@ -3,12 +3,12 @@ package util.entity;
 import java.util.StringJoiner;
 
 public class Term extends Token {
-    private int end;
+    private final int end;
 
     public Term(Token token, String name) {
         super(token.getDocument(), token.getOffset(), name);
 
-        end = offset + getNgram().length();
+        end = getOffset() + getNgram().length();
         fields.add("end");
     }
 
@@ -16,12 +16,12 @@ public class Term extends Token {
         this(token, token.getNgram());
     }
 
-    public StringJoiner compose() {
+    protected StringJoiner compose() {
         return super.compose()
             .add(String.valueOf(end));
     }
 
     public String toString() {
-        return compose.toString();
+        return compose().toString();
     }
 }

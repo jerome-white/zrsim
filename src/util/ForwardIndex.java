@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.Collections;
 import java.util.function.Consumer;
 
+import util.entity.Token;
+
 public class ForwardIndex {
     private class TokenIterator implements Iterable<Token>, Iterator<Token> {
         Iterator<Token> tokenIterator;

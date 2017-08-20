@@ -6,11 +6,13 @@ import java.lang.Iterable;
 import java.lang.StringBuilder;
 import java.lang.IllegalArgumentException;
 
+import util.entity.Token;
+
 public class PseudoTermNamer implements TermNamer {
     private String format;
     private Map<String, Integer> terms;
 
-    public PseudoTerm (Iterable<Token> tokens) {
+    public PseudoTermNamer(Iterable<Token> tokens) {
         terms = new HashMap<String, Integer>();
 
         for (Token token : tokens) {

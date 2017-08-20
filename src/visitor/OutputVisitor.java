@@ -2,8 +2,8 @@ package visitor;
 
 import java.io.PrintStream;
 
-import util.Token;
 import util.SuffixTree;
+import util.entity.Token;
 
 public class OutputVisitor implements SuffixTreeVisitor {
     private int appearances;

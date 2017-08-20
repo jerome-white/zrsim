@@ -2,7 +2,7 @@ package util.entity;
 
 import java.util.StringJoiner;
 
-public class Token {
+public class Token extends Entity {
     private final int offset;
 
     public Token(String document, int offset, String ngram) {
@@ -12,17 +12,17 @@ public class Token {
         fields.add("offset");
     }
 
-    public Token(Token token) {
-        this(token.getDocument(), token.offset, token.getNgram());
+    public int getOffset() {
+        return offset;
     }
 
-    public StringJoiner compose() {
-        return super().compose()
+    protected StringJoiner compose() {
+        return super.compose()
             .add(String.valueOf(offset));
     }
 
     public String toString() {
-        return compose.toString();
+        return compose().toString();
     }
 
     public static Token fromString(String string) {

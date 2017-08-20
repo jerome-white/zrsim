@@ -9,11 +9,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 
-import util.Term;
-import util.Token;
 import util.LogAgent;
 import util.TermNamer;
 import util.ForwardIndex;
+import util.entity.Term;
+import util.entity.Token;
 
 public class TermCreator implements Callable<String> {
     private Path root;
