@@ -42,8 +42,8 @@ public class OutputVisitor implements SuffixTreeVisitor {
             (redundants || !redundants && !node.isRedundant())) {
             node.forEachLocation((t, u) -> {
                     for (Integer offset : u) {
-                        Token token = new Token(t, offset, ngram);
-                        printStream.println(token.toString());
+                        Token token = new Token(t, ngram, offset);
+                        printStream.println(token);
                     }
                 });
         }

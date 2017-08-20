@@ -5,7 +5,7 @@ import java.util.StringJoiner;
 public class Token extends Entity {
     private final int offset;
 
-    public Token(String document, int offset, String ngram) {
+    public Token(String document, String ngram, int offset) {
         super(document, ngram);
 
         this.offset = offset;
@@ -28,10 +28,6 @@ public class Token extends Entity {
     public static Token fromString(String string) {
         String[] parts = string.split(Entity.DELIMITER);
 
-        String document = parts[0];
-        String ngram = parts[1];
-        int offset = Integer.valueOf(parts[2])/*.intValue()*/;
-
-        return new Token(document, offset, ngram);
+        return new Token(parts[0], parts[1], Integer.valueOf(parts[2]));
     }
 }
