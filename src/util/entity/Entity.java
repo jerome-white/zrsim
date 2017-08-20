@@ -1,4 +1,4 @@
-package util;
+package util.entity;
 
 import java.util.StringJoiner;
 
