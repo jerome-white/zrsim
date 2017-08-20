@@ -6,9 +6,11 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.nio.charset.StandardCharsets;
+import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 
 import util.Term;
+import util.Token;
 import util.LogAgent;
 import util.TermNamer;
 import util.ForwardIndex;
@@ -32,19 +34,16 @@ public class TermCreator implements Callable<String> {
     public String call() {
         LogAgent.LOGGER.info(document);
 
-        Path output = root.resolve(document);
+	StringJoiner terms = new StringJoiner("\n", "", "\n");
+	index.forEachToken(document, t -> {
+		String name = termNamer.get(t.getNgram());
+		Term term = new Term(t, name);
+		terms.add(term.toString());
+	    });
 
+        Path output = root.resolve(document);
         try (OutputStream out = Files.newOutputStream(output)) {
-            index.forEachToken(document, t -> {
-                    Term term = new Term(t, termNamer.get(t.getNgram()));
-                    String line = term.toString() + "\n";
-		    try {
-			out.write(line.getBytes(StandardCharsets.UTF_8));
-		    }
-		    catch (IOException ex) {
-			throw new UncheckedIOException(ex);
-		    }
-                });
+		out.write(terms.toString().getBytes(StandardCharsets.UTF_8));
 	    }
         catch (IOException ex) {
             throw new UncheckedIOException(ex);
