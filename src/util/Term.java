@@ -5,27 +5,23 @@ import java.util.StringJoiner;
 public class Term extends Token {
     private int end;
 
-    private String name;
-
     public Term(Token token, String name) {
-        super(token);
+        super(token.getDocument(), token.getOffset(), name);
 
-        this.name = name;
-        end = offset + ngram.length();
+        end = offset + getNgram().length();
+        fields.add("end");
     }
 
     public Term(Token token) {
         this(token, token.getNgram());
     }
 
-    public String toString() {
-        StringJoiner joiner = new StringJoiner(delimiter);
-        joiner
-            .add(name)
-            .add(ngram)
-            .add(String.valueOf(offset))
+    public StringJoiner compose() {
+        return super.compose()
             .add(String.valueOf(end));
+    }
 
-        return joiner.toString();
+    public String toString() {
+        return compose.toString();
     }
 }

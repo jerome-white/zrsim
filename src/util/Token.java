@@ -3,56 +3,35 @@ package util;
 import java.util.StringJoiner;
 
 public class Token {
-    protected final int offset;
-
-    protected final String document;
-    protected final String ngram;
-    protected final String delimiter;
-
-    public Token(String document, int offset, String ngram, String delimiter) {
-        this.document = document;
-        this.offset = offset;
-        this.ngram = ngram;
-        this.delimiter = delimiter;
-    }
+    private final int offset;
 
     public Token(String document, int offset, String ngram) {
-        this(document, offset, ngram, ",");
+        super(document, ngram);
+
+        this.offset = offset;
+        fields.add("offset");
     }
 
     public Token(Token token) {
-        this(token.document, token.offset, token.ngram, token.delimiter);
+        this(token.getDocument(), token.offset, token.getNgram());
     }
 
-    public String getNgram() {
-        return ngram;
-    }
-
-    public String getDocument() {
-        return document;
+    public StringJoiner compose() {
+        return super().compose()
+            .add(String.valueOf(offset));
     }
 
     public String toString() {
-        StringJoiner joiner = new StringJoiner(delimiter);
-        joiner
-            .add(document)
-            .add(ngram)
-            .add(String.valueOf(offset));
-
-        return joiner.toString();
+        return compose.toString();
     }
 
-    public static Token fromString(String string, String delimiter) {
-        String[] parts = string.split(delimiter);
+    public static Token fromString(String string) {
+        String[] parts = string.split(Token.DELIMITER);
 
         String document = parts[0];
         String ngram = parts[1];
         int offset = Integer.valueOf(parts[2])/*.intValue()*/;
 
-        return new Token(document, offset, ngram, delimiter);
-    }
-
-    public static Token fromString(String string) {
-        return Token.fromString(string, ",");
+        return new Token(document, offset, ngram);
     }
 }
