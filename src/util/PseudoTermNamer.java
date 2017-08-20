@@ -6,7 +6,7 @@ import java.lang.Iterable;
 import java.lang.StringBuilder;
 import java.lang.IllegalArgumentException;
 
-public class PseudoTerm implements TermNamer {
+public class PseudoTermNamer implements TermNamer {
     private String format;
     private Map<String, Integer> terms;
 
