@@ -29,20 +29,20 @@ public class TokenCollector implements Callable<ForwardIndex> {
         try (InputStream in = Files.newInputStream(path);
              InputStreamReader stream = new InputStreamReader(in);
              LineNumberReader reader = new LineNumberReader(stream)) {
+            LogAgent.LOGGER.info(String.valueOf(focus));
+
+            int interest = focus;
             ForwardIndex index = new ForwardIndex();
-            String order = String.valueOf(focus);
 
-            LogAgent.LOGGER.info(order);
-
-            for (int i = focus; ; ) {
+            while (true) {
                 String line = reader.readLine();
                 if (line == null) {
                     break;
                 }
 
-                if (reader.getLineNumber() - 1 == i) {
+                if (reader.getLineNumber() - 1 == interest) {
                     index.add(Token.fromString(line));
-                    i += block;
+                    interest += block;
                 }
             }
 
