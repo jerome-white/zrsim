@@ -29,7 +29,7 @@ public class MakeTerms {
 
         ExecutorService executors = Executors.newFixedThreadPool(workers);
 
-        List<Callable<ForwardIndex>> t1 =
+        List<Callable<ForwardIndex>> indexTasks =
             new LinkedList<Callable<ForwardIndex>>();
 
         /*
@@ -38,20 +38,31 @@ public class MakeTerms {
         LogAgent.LOGGER.info("Term collection");
 
         for (int i = 0; i < workers; i++) {
-            t1.add(new TokenCollector(posting, i, workers));
+            indexTasks.add(new TokenCollector(posting, i, workers));
         }
 
+        ForwardIndex index = null;
+
         try {
-            List<Future<ForwardIndex>> result = executors.invokeAll(t1);
+            List<Future<ForwardIndex>> result =
+                executors.invokeAll(indexTasks);
 
             /*
              * Combine the indices
              */
             LogAgent.LOGGER.info("Combining indexes");
 
-            ForwardIndex index = new ForwardIndex();
             for (Future<ForwardIndex> future : result) {
-                index.fold(future.get());
+                ForwardIndex i = future.get();
+                if (index == null) {
+                    index = i;
+                }
+                else {
+                    index.fold(i);
+                }
+            }
+            catch (InterruptedException | ExecutionException ex) {
+                throw new UndeclaredThrowableException(ex);
             }
 
             /*
@@ -66,16 +77,18 @@ public class MakeTerms {
              */
             LogAgent.LOGGER.info("Save to disk");
 
-            List<Callable<String>> t2 = new LinkedList<Callable<String>>();
+            List<Callable<String>> creationTasks =
+                new LinkedList<Callable<String>>();
             for (String document : index.documents()) {
-                t2.add(new TermCreator(index, document, termNamer, output));
+                TermCreator creator = new TermCreator(index,
+                                                      document,
+                                                      termNamer,
+                                                      output);
+                creationTasks.add(creator);
             }
-            executors.invokeAll(t2);
+            executors.invokeAll(creationTasks);
         }
         catch (InterruptedException ex) {
-            throw new UndeclaredThrowableException(ex);
-        }
-        catch (ExecutionException ex) {
             throw new UndeclaredThrowableException(ex);
         }
 
