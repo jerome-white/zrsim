@@ -34,17 +34,21 @@ public class TermCreator implements Callable<String> {
     public String call() {
         LogAgent.LOGGER.info(document);
 
-	StringJoiner terms = new StringJoiner("\n", "", "\n");
-	index.forEachToken(document, t -> {
-		String name = termNamer.get(t.getNgram());
-		Term term = new Term(t, name);
-		terms.add(term.toString());
-	    });
+        StringJoiner terms = new StringJoiner("\n", "", "\n");
+
+        index.forEachToken(document, t -> {
+                String name = termNamer.get(t.getNgram());
+                Term term = new Term(t, name);
+                if (terms.length() == 0) {
+                    terms.add(term.getFields());
+                }
+                terms.add(term.toString());
+            });
 
         Path output = root.resolve(document);
         try (OutputStream out = Files.newOutputStream(output)) {
-		out.write(terms.toString().getBytes(StandardCharsets.UTF_8));
-	    }
+            out.write(terms.toString().getBytes(StandardCharsets.UTF_8));
+        }
         catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
