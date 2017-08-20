@@ -26,7 +26,7 @@ public class Token extends Entity {
     }
 
     public static Token fromString(String string) {
-        String[] parts = string.split(Token.DELIMITER);
+        String[] parts = string.split(Entity.DELIMITER);
 
         String document = parts[0];
         String ngram = parts[1];
