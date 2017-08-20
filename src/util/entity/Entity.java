@@ -2,6 +2,7 @@ package util.entity;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.StringJoiner;
 
 public abstract class Entity {
@@ -15,7 +16,7 @@ public abstract class Entity {
         this.document = document;
         this.ngram = ngram;
 
-        fields = Arrays.asList("term", "ngram");
+        fields = new LinkedList<String>(Arrays.asList("term", "ngram"));
     }
 
     public String getNgram() {
