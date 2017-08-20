@@ -41,4 +41,6 @@ public abstract class Entity {
             .add(document)
             .add(ngram);
     }
+
+    public abstract String toString();
 }
