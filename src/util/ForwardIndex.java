@@ -13,9 +13,24 @@ import java.util.function.Consumer;
 import util.entity.Token;
 
 public class ForwardIndex {
+    private class Nugget {
+        public final int offset;
+        public final String ngram;
+
+        public Nugget(Token token) {
+            offset = token.getOffset();
+            ngram = token.getNgram();
+        }
+
+        public Token toToken(String document) {
+            return new Token(document, ngram, offset);
+        }
+    }
+
     private class TokenIterator implements Iterable<Token>, Iterator<Token> {
-        Iterator<Token> tokenIterator;
-        Iterator<String> documentIterator;
+        private String currentDoc;
+        private Iterator<Nugget> nuggetIterator;
+        private Iterator<String> documentIterator;
 
         public TokenIterator() {
             documentIterator = index.keySet().iterator();
@@ -27,17 +42,21 @@ public class ForwardIndex {
         }
 
         private void tee() {
-            tokenIterator = (documentIterator.hasNext()) ?
-                index.get(documentIterator.next()).iterator() :
-                Collections.emptyIterator();
+            if (documentIterator.hasNext()) {
+                currentDoc = documentIterator.next();
+                nuggetIterator = index.get(currentDoc).iterator();
+            }
+            else {
+                nuggetIterator = Collections.emptyIterator();
+            }
         }
 
         public boolean hasNext() {
-            return tokenIterator.hasNext();
+            return nuggetIterator.hasNext();
         }
 
         public Token next() {
-            Token token = tokenIterator.next();
+            Token token = nuggetIterator.next().toToken(currentDoc);
 
             if (!hasNext()) {
                 tee();
@@ -47,34 +66,31 @@ public class ForwardIndex {
         }
     }
 
-    private Map<String, List<Token>> index;
+    private Map<String, List<Nugget>> index;
 
     public ForwardIndex() {
-        index = new HashMap<String, List<Token>>();
+        index = new HashMap<String, List<Nugget>>();
     }
 
-    private List<Token> seed(String document) {
-        return index.computeIfAbsent(document, k -> new LinkedList<Token>());
+    private List<Nugget> seed(String document) {
+        return index.computeIfAbsent(document, k -> new LinkedList<Nugget>());
+    }
+
+    public void add(String document, Token token) {
+        seed(document).add(new Nugget(token));
     }
 
     public void add(Token token) {
         add(token.getDocument(), token);
     }
 
-    public void add(String document, Token token) {
-        seed(document).add(token);
-    }
-
-    public void add(String document, List<Token> tokens) {
-        seed(document).addAll(tokens);
-    }
-
     public void fold(ForwardIndex index) {
-        index.index.forEach((k, v) -> add(k, v));
+        index.index.forEach((k, v) -> seed(k).addAll(v));
     }
 
     public void forEachToken(String document, Consumer<Token> consumer) {
-        for (Token token : index.get(document)) {
+        for (Nugget nugget : index.get(document)) {
+            Token token = new Token(document, nugget.ngram, nugget.offset);
             consumer.accept(token);
         }
     }
