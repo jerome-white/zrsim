@@ -13,11 +13,11 @@ import java.util.function.Consumer;
 import util.entity.Token;
 
 public class ForwardIndex {
-    private class Nugget {
+    private class PartialToken {
         public final int offset;
         public final String ngram;
 
-        public Nugget(Token token) {
+        public PartialToken(Token token) {
             offset = token.getOffset();
             ngram = token.getNgram();
         }
@@ -29,7 +29,7 @@ public class ForwardIndex {
 
     private class TokenIterator implements Iterable<Token>, Iterator<Token> {
         private String currentDoc;
-        private Iterator<Nugget> nuggetIterator;
+        private Iterator<PartialToken> tokenIterator;
         private Iterator<String> documentIterator;
 
         public TokenIterator() {
@@ -44,19 +44,19 @@ public class ForwardIndex {
         private void tee() {
             if (documentIterator.hasNext()) {
                 currentDoc = documentIterator.next();
-                nuggetIterator = index.get(currentDoc).iterator();
+                tokenIterator = index.get(currentDoc).iterator();
             }
             else {
-                nuggetIterator = Collections.emptyIterator();
+                tokenIterator = Collections.emptyIterator();
             }
         }
 
         public boolean hasNext() {
-            return nuggetIterator.hasNext();
+            return tokenIterator.hasNext();
         }
 
         public Token next() {
-            Token token = nuggetIterator.next().toToken(currentDoc);
+            Token token = tokenIterator.next().toToken(currentDoc);
 
             if (!hasNext()) {
                 tee();
@@ -66,18 +66,19 @@ public class ForwardIndex {
         }
     }
 
-    private Map<String, List<Nugget>> index;
+    private Map<String, List<PartialToken>> index;
 
     public ForwardIndex() {
-        index = new HashMap<String, List<Nugget>>();
+        index = new HashMap<String, List<PartialToken>>();
     }
 
-    private List<Nugget> seed(String document) {
-        return index.computeIfAbsent(document, k -> new LinkedList<Nugget>());
+    private List<PartialToken> seed(String document) {
+        return index
+            .computeIfAbsent(document, k -> new LinkedList<PartialToken>());
     }
 
     public void add(String document, Token token) {
-        seed(document).add(new Nugget(token));
+        seed(document).add(new PartialToken(token));
     }
 
     public void add(Token token) {
@@ -89,9 +90,8 @@ public class ForwardIndex {
     }
 
     public void forEachToken(String document, Consumer<Token> consumer) {
-        for (Nugget nugget : index.get(document)) {
-            Token token = new Token(document, nugget.ngram, nugget.offset);
-            consumer.accept(token);
+        for (PartialToken partial : index.get(document)) {
+            consumer.accept(partial.toToken(document));
         }
     }
 
