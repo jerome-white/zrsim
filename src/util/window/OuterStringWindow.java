@@ -1,4 +1,4 @@
-package util;
+package util.window;
 
 public class OuterStringWindow extends StringWindow {
     private String string;

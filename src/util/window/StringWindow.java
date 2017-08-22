@@ -1,4 +1,4 @@
-package util;
+package util.window;
 
 import java.lang.Iterable;
 import java.util.Iterator;

@@ -3,8 +3,8 @@ package visitor;
 import java.util.NoSuchElementException;
 
 import util.SuffixTree;
-import util.StringWindow;
-import util.ComprehensiveStringWindow;
+import util.window.StringWindow;
+import util.window.ComprehensiveStringWindow;
 
 public class MarkRedundantVisitor implements SuffixTreeVisitor {
     private String ngram;
