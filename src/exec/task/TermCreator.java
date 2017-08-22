@@ -10,8 +10,8 @@ import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 
 import util.LogAgent;
-import util.TermNamer;
 import util.ForwardIndex;
+import util.namer.TermNamer;
 import util.entity.Term;
 import util.entity.Token;
 

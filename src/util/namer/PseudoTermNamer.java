@@ -1,4 +1,4 @@
-package util;
+package util.namer;
 
 import java.util.Map;
 import java.util.HashMap;
