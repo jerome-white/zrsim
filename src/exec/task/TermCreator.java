@@ -10,10 +10,10 @@ import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 
 import util.LogAgent;
-import util.ForwardIndex;
 import util.namer.TermNamer;
 import util.entity.Term;
 import util.entity.Token;
+import index.ForwardIndex;
 
 public class TermCreator implements Callable<String> {
     private Path root;

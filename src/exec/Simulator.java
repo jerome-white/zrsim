@@ -17,11 +17,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
 import util.LogAgent;
-import util.SuffixTree;
 import exec.task.DocumentParser;
 import exec.task.generator.TaskGenerator;
 import exec.task.generator.FragmentGenerator;
 import exec.task.generator.SelectionGenerator;
+import index.SuffixTree;
 
 public class Simulator {
     public static void main(String[] args) {

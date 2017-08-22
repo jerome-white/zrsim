@@ -10,8 +10,8 @@ import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
 import util.LogAgent;
-import util.ForwardIndex;
 import util.entity.Token;
+import index.ForwardIndex;
 
 public class TokenCollector implements Callable<ForwardIndex> {
     private int focus;

@@ -2,9 +2,9 @@ package visitor;
 
 import java.util.NoSuchElementException;
 
-import util.SuffixTree;
 import util.window.StringWindow;
 import util.window.ComprehensiveStringWindow;
+import index.SuffixTree;
 
 public class MarkRedundantVisitor implements SuffixTreeVisitor {
     private String ngram;

@@ -1,4 +1,4 @@
-package util;
+package index;
 
 import java.nio.CharBuffer;
 import java.lang.IllegalStateException;

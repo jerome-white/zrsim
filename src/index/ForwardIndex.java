@@ -1,4 +1,4 @@
-package util;
+package index;
 
 import java.lang.Iterable;
 import java.util.Map;

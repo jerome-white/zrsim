@@ -1,7 +1,7 @@
 package exec.task.generator;
 
-import util.SuffixTree;
 import exec.task.OutputFragment;
+import index.SuffixTree;
 
 public class FragmentGenerator extends TaskGenerator {
     public FragmentGenerator() {

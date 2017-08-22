@@ -13,11 +13,11 @@ import java.util.concurrent.ExecutionException;
 import java.lang.reflect.UndeclaredThrowableException;
 
 import util.LogAgent;
-import util.ForwardIndex;
 import util.namer.TermNamer;
 import util.namer.PseudoTermNamer;
 import exec.task.TermCreator;
 import exec.task.TokenCollector;
+import index.ForwardIndex;
 
 public class MakeTerms {
     public static void main(String[] args) {

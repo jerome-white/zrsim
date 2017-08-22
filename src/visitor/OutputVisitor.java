@@ -2,7 +2,7 @@ package visitor;
 
 import java.io.PrintStream;
 
-import util.SuffixTree;
+import index.SuffixTree;
 import util.entity.Token;
 
 public class OutputVisitor implements SuffixTreeVisitor {

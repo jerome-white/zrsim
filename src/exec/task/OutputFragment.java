@@ -3,8 +3,8 @@ package exec.task;
 import java.io.PrintStream;
 import java.util.concurrent.Callable;
 
-import util.SuffixTree;
 import exec.StreamStorageThreadFactory;
+import index.SuffixTree;
 import visitor.OutputVisitor;
 
 public class OutputFragment implements Callable<String> {

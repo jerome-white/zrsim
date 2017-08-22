@@ -1,7 +1,7 @@
 package exec.task.generator;
 
-import util.SuffixTree;
 import exec.task.TermSelector;
+import index.SuffixTree;
 
 public class SelectionGenerator extends TaskGenerator {
     private SuffixTree root;

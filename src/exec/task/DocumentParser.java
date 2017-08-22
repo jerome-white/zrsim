@@ -10,7 +10,7 @@ import java.nio.channels.FileChannel;
 import java.util.concurrent.Callable;
 
 import util.LogAgent;
-import util.SuffixTree;
+import index.SuffixTree;
 
 public class DocumentParser implements Callable<String> {
     private int window;

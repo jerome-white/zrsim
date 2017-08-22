@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.function.BiConsumer;
 import java.util.concurrent.Callable;
 
-import util.SuffixTree;
+import index.SuffixTree;
 
 public abstract class TaskGenerator implements BiConsumer<String, SuffixTree> {
     private List<Callable<String>> tasks;

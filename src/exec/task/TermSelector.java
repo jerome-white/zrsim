@@ -2,7 +2,7 @@ package exec.task;
 
 import java.util.concurrent.Callable;
 
-import util.SuffixTree;
+import index.SuffixTree;
 import visitor.MarkRedundantVisitor;
 
 public class TermSelector implements Callable<String> {
