@@ -14,8 +14,8 @@ import util.entity.Token;
 
 public class ForwardIndex {
     private class PartialToken {
-        public final int offset;
-        public final String ngram;
+        private final int offset;
+        private final String ngram;
 
         public PartialToken(Token token) {
             offset = token.getOffset();
