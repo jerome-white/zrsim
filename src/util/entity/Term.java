@@ -6,9 +6,11 @@ public class Term extends Token {
     private final int end;
 
     public Term(Token token, String name) {
-        super(token.getDocument(), name, token.getOffset());
+        super(name, token.getNgram(), token.getOffset());
 
         end = getOffset() + getNgram().length();
+
+        fields.set(0, "term");
         fields.add("end");
     }
 

@@ -16,7 +16,7 @@ public abstract class Entity {
         this.document = document;
         this.ngram = ngram;
 
-        fields = new LinkedList<String>(Arrays.asList("term", "ngram"));
+        fields = new LinkedList<String>(Arrays.asList("document", "ngram"));
     }
 
     public String getNgram() {
