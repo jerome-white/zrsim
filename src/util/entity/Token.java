@@ -9,7 +9,7 @@ public class Token extends Entity {
         super(document, ngram);
 
         this.offset = offset;
-        fields.add("offset");
+        fields.add("start");
     }
 
     public int getOffset() {
