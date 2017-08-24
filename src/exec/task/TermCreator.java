@@ -16,6 +16,30 @@ import util.entity.Token;
 import index.ForwardIndex;
 
 public class TermCreator implements Callable<String> {
+    private class TermJoiner {
+        private StringJoiner string;
+
+        public TermJoiner() {
+            string = new StringJoiner("\n", "", "\n");
+            string.setEmptyValue("");
+        }
+
+        public boolean isEmpty() {
+            return string.length() == 0;
+        }
+
+        public void push(Term term) {
+            if (isEmpty()) {
+                string.add(term.getFields());
+            }
+            string.add(term.toString());
+        }
+
+        public byte[] toBytes() {
+            return string.toString().getBytes(StandardCharsets.UTF_8);
+        }
+    }
+
     private Path root;
     private String document;
     private TermNamer termNamer;
@@ -34,21 +58,15 @@ public class TermCreator implements Callable<String> {
     public String call() {
         LogAgent.LOGGER.info(document);
 
-        StringJoiner terms = new StringJoiner("\n", "", "\n");
-        terms.setEmptyValue(""); // if nothing's been added, length should be 0
-
+        TermJoiner termJoiner = new TermJoiner();
         index.forEachToken(document, t -> {
                 String name = termNamer.get(t.getNgram());
-                Term term = new Term(t, name);
-                if (terms.length() == 0) {
-                    terms.add(term.getFields());
-                }
-                terms.add(term.toString());
+                termJoiner.push(new Term(t, name));
             });
 
         Path output = root.resolve(document);
         try (OutputStream out = Files.newOutputStream(output)) {
-            out.write(terms.toString().getBytes(StandardCharsets.UTF_8));
+            out.write(termJoiner.toBytes());
         }
         catch (IOException ex) {
             throw new UncheckedIOException(ex);
