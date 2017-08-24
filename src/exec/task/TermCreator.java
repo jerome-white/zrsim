@@ -35,6 +35,7 @@ public class TermCreator implements Callable<String> {
         LogAgent.LOGGER.info(document);
 
         StringJoiner terms = new StringJoiner("\n", "", "\n");
+        terms.setEmptyValue(""); // if nothing's been added, length should be 0
 
         index.forEachToken(document, t -> {
                 String name = termNamer.get(t.getNgram());
