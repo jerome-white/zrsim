@@ -27,7 +27,7 @@ public abstract class Entity {
         return document;
     }
 
-    public String getFields() {
+    public final String getFields() {
         StringJoiner joiner = new StringJoiner(Entity.DELIMITER);
 
         for (String field : fields) {
