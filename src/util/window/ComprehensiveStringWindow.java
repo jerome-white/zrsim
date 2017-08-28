@@ -32,7 +32,7 @@ public class ComprehensiveStringWindow extends StringWindow {
     }
 
     public boolean hasNext() {
-        return left + minimum <= length;
+        return maximum > 0 && left + minimum <= length;
     }
 
     public String next() {
