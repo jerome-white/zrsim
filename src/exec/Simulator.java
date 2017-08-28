@@ -54,7 +54,9 @@ public class Simulator {
         List<Callable<String>> tasks = new LinkedList<Callable<String>>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(corpus)) {
             for (Path file : stream) {
-                tasks.add(new DocumentParser(suffixTree, max_ngram, file));
+                DocumentParser parser =
+                    new DocumentParser(suffixTree, file, min_ngram, max_ngram);
+                tasks.add(parser);
             }
         }
         catch (IOException ex) {

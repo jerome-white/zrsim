@@ -13,16 +13,18 @@ import util.LogAgent;
 import index.SuffixTree;
 
 public class DocumentParser implements Callable<String> {
-    private int window;
+    private int min;
+    private int max;
 
     private Path path;
     private String encoding;
     private SuffixTree tree;
 
-    public DocumentParser(SuffixTree tree, int window, Path path) {
+    public DocumentParser(SuffixTree tree, Path path, int min, int max) {
         this.tree = tree;
-        this.window = window;
         this.path = path;
+        this.min = min;
+        this.max = max;
 
         encoding = System.getProperty("file.encoding");
     }
@@ -32,16 +34,22 @@ public class DocumentParser implements Callable<String> {
         LogAgent.LOGGER.info(document);
 
         try (FileChannel fc = FileChannel.open(path)) {
-            ByteBuffer buffer = ByteBuffer.allocate(window);
+            byte[] bytes = new byte[max];
+            ByteBuffer buffer = ByteBuffer.allocate(max);
 
             for (int i = 0; ; i++) {
                 fc.read(buffer, i);
-                if (buffer.hasRemaining()) {
+
+                int read = max - buffer.remaining();
+                if (read < min) {
                     break;
                 }
                 buffer.rewind();
 
-                CharBuffer ngram = Charset.forName(encoding).decode(buffer);
+                buffer.get(bytes);
+                CharBuffer ngram = Charset
+                    .forName(encoding)
+                    .decode(ByteBuffer.wrap(bytes, 0, read));
                 tree.add(ngram, document, i);
 
                 buffer.clear();
