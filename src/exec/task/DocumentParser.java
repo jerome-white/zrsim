@@ -44,15 +44,15 @@ public class DocumentParser implements Callable<String> {
                 if (read < min) {
                     break;
                 }
-                buffer.rewind();
 
+                buffer.rewind();
                 buffer.get(bytes);
+                buffer.clear();
+
                 CharBuffer ngram = Charset
                     .forName(encoding)
                     .decode(ByteBuffer.wrap(bytes, 0, read));
                 tree.add(ngram, document, i);
-
-                buffer.clear();
             }
         }
         catch (IOException ex) {
