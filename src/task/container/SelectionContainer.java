@@ -7,8 +7,6 @@ public class SelectionContainer extends TaskContainer {
     private SuffixTree root;
 
     public SelectionContainer(SuffixTree root) {
-        super();
-
         this.root = root;
     }
 
