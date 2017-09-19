@@ -8,11 +8,8 @@ import java.util.concurrent.Callable;
 import index.SuffixTree;
 
 public abstract class TaskContainer implements BiConsumer<String, SuffixTree> {
-    private List<Callable<String>> tasks = new LinkedList<Callable<String>>();
-
-    public void addTask(Callable<String> task) {
-        tasks.add(task);
-    }
+    protected List<Callable<String>> tasks =
+        new LinkedList<Callable<String>>();
 
     public List<Callable<String>> getTasks() {
         return tasks;

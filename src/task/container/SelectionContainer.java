@@ -11,6 +11,6 @@ public class SelectionContainer extends TaskContainer {
     }
 
     public void accept(String t, SuffixTree u) {
-        addTask(new TermSelector(root, u, t));
+        tasks.add(new TermSelector(root, u, t));
     }
 }
