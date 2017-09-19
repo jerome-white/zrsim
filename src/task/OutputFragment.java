@@ -1,9 +1,9 @@
-package exec.task;
+package task;
 
 import java.io.PrintStream;
 import java.util.concurrent.Callable;
 
-import exec.StreamStorageThreadFactory;
+import util.StreamStorageThreadFactory;
 import index.SuffixTree;
 import visitor.OutputVisitor;
 

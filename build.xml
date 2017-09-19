@@ -54,7 +54,7 @@
   </target>
 
   <target name="run" depends="compile">
-    <java fork="true" classname="exec.Simulator">
+    <java fork="true" classname="exec.NGramExtractor">
       <jvmarg value="-enableassertions"/>
       <classpath refid="default_classpath"/>
       <arg value="${corpus}"/>

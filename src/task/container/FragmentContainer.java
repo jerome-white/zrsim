@@ -1,10 +1,10 @@
-package exec.task.generator;
+package task.container;
 
-import exec.task.OutputFragment;
+import task.OutputFragment;
 import index.SuffixTree;
 
-public class FragmentGenerator extends TaskGenerator {
-    public FragmentGenerator() {
+public class FragmentContainer extends TaskContainer {
+    public FragmentContainer() {
         super();
     }
 

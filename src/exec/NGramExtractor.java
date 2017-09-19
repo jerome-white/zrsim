@@ -17,13 +17,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
 import util.LogAgent;
-import exec.task.DocumentParser;
-import exec.task.generator.TaskGenerator;
-import exec.task.generator.FragmentGenerator;
-import exec.task.generator.SelectionGenerator;
+import util.StreamStorageThreadFactory;
+import task.DocumentParser;
+import task.container.TaskContainer;
+import task.container.FragmentContainer;
+import task.container.SelectionContainer;
 import index.SuffixTree;
 
-public class Simulator {
+public class NGramExtractor {
     public static void main(String[] args) {
         /*
          *
@@ -75,10 +76,10 @@ public class Simulator {
          */
         LogAgent.LOGGER.info("Term selection");
 
-        TaskGenerator generator = new SelectionGenerator(suffixTree);
-        suffixTree.forEachChild(generator);
+        TaskContainer container = new SelectionContainer(suffixTree);
+        suffixTree.forEachChild(container);
         try {
-            executors.invokeAll(generator.getTasks());
+            executors.invokeAll(container.getTasks());
         }
         catch (InterruptedException ex) {
             throw new UndeclaredThrowableException(ex);
@@ -91,14 +92,14 @@ public class Simulator {
          */
         LogAgent.LOGGER.info("Terms to disk");
 
-        generator = new FragmentGenerator();
-        suffixTree.forEachChild(generator);
+        container = new FragmentContainer();
+        suffixTree.forEachChild(container);
 
         StreamStorageThreadFactory factory =
             new StreamStorageThreadFactory(tmpdir);
         executors = Executors.newFixedThreadPool(workers, factory);
         try {
-            executors.invokeAll(generator.getTasks());
+            executors.invokeAll(container.getTasks());
         }
         catch (InterruptedException ex) {
             throw new UndeclaredThrowableException(ex);

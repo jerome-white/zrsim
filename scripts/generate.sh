@@ -38,7 +38,7 @@ for i in $root/trees/*; do
 output=\$SLURM_JOBTMP/$ngrams
 
 mkdir --parents \$output
-java `jargs $memory $workers` exec.MakeTerms \
+java `jargs $memory $workers` exec.TermGenerator \
     $i $workers \$output
 
 mkdir --parents $pseudoterms

@@ -12,14 +12,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ExecutionException;
 import java.lang.reflect.UndeclaredThrowableException;
 
+import task.TermCreator;
+import task.TokenCollector;
 import util.LogAgent;
 import util.namer.TermNamer;
 import util.namer.PseudoTermNamer;
-import exec.task.TermCreator;
-import exec.task.TokenCollector;
 import index.ForwardIndex;
 
-public class MakeTerms {
+public class TermGenerator {
     public static void main(String[] args) {
         Path posting = Paths.get(args[0]);
         int workers = Integer.parseInt(args[1]);

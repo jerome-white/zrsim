@@ -1,12 +1,12 @@
-package exec.task.generator;
+package task.container;
 
-import exec.task.TermSelector;
+import task.TermSelector;
 import index.SuffixTree;
 
-public class SelectionGenerator extends TaskGenerator {
+public class SelectionContainer extends TaskContainer {
     private SuffixTree root;
 
-    public SelectionGenerator(SuffixTree root) {
+    public SelectionContainer(SuffixTree root) {
         super();
 
         this.root = root;
