@@ -10,7 +10,7 @@ import java.nio.channels.FileChannel;
 import java.util.concurrent.Callable;
 
 import util.LogAgent;
-import index.SuffixTree;
+import util.NGramCollection;
 
 public class DocumentParser implements Callable<String> {
     private int min;
@@ -18,15 +18,22 @@ public class DocumentParser implements Callable<String> {
 
     private Path path;
     private String encoding;
-    private SuffixTree tree;
+    private NGramCollection collection;
 
-    public DocumentParser(SuffixTree tree, Path path, int min, int max) {
-        this.tree = tree;
+    public DocumentParser(NGramCollection collection,
+			  Path path,
+			  int min,
+			  int max) {
+        this.collection = collection;
         this.path = path;
         this.min = min;
         this.max = max;
 
         encoding = System.getProperty("file.encoding");
+    }
+
+    public DocumentParser(NGramCollection collection, Path path, int n) {
+	this(collection, path, n, n);
     }
 
     public String call() {
@@ -52,7 +59,7 @@ public class DocumentParser implements Callable<String> {
                 CharBuffer ngram = Charset
                     .forName(encoding)
                     .decode(ByteBuffer.wrap(bytes, 0, read));
-                tree.add(ngram, document, i);
+                collection.add(ngram, document, i);
             }
         }
         catch (IOException ex) {
