@@ -11,6 +11,8 @@ import java.util.concurrent.Callable;
 
 import util.LogAgent;
 import util.NGramCollection;
+import util.keeper.GateKeeper;
+import util.keeper.AllAccessGateKeeper;
 
 public class DocumentParser implements Callable<String> {
     private int min;
@@ -19,21 +21,31 @@ public class DocumentParser implements Callable<String> {
     private Path path;
     private String encoding;
     private NGramCollection collection;
+    private GateKeeper gateKeeper;
 
     public DocumentParser(NGramCollection collection,
-			  Path path,
-			  int min,
-			  int max) {
+                          Path path,
+                          int min,
+                          int max,
+                          GateKeeper gateKeeper) {
         this.collection = collection;
         this.path = path;
         this.min = min;
         this.max = max;
+        this.gateKeeper = gateKeeper;
 
         encoding = System.getProperty("file.encoding");
     }
 
+    public DocumentParser(NGramCollection collection,
+                          Path path,
+                          int min,
+                          int max) {
+        this(collection, path, min, max, new AllAccessGateKeeper());
+    }
+
     public DocumentParser(NGramCollection collection, Path path, int n) {
-	this(collection, path, n, n);
+        this(collection, path, n, n);
     }
 
     public String call() {
@@ -59,7 +71,9 @@ public class DocumentParser implements Callable<String> {
                 CharBuffer ngram = Charset
                     .forName(encoding)
                     .decode(ByteBuffer.wrap(bytes, 0, read));
-                collection.add(ngram, document, i);
+                if (gateKeeper.admit(ngram)) {
+                    collection.add(ngram, document, i);
+                }
             }
         }
         catch (IOException ex) {
