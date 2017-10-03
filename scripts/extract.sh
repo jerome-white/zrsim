@@ -34,6 +34,8 @@ fi
 log=simulate.jobs
 rmlogs $log
 
+mkdir --parents $root/trees
+
 for i in `seq $starting_ngram $max_ngram`; do
     output=$root/trees/`printf "%02.f" $i`.csv
     if [ -e $output ]; then
@@ -52,7 +54,7 @@ tar \
     --file=$SCRATCH/zrt/corpus.tar.bz
 
 java `jargs $memory $workers` exec.NGramExtractor \
-    \$SLURM_JOBTMP/corpus $min_ngram $i $output $workers \$SLURM_JOBTMP
+    \$SLURM_JOBTMP/corpus $min_ngram $i $output $workers $BEEGFS
 
 chmod 444 $output
 EOF
