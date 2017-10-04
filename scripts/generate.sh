@@ -29,7 +29,7 @@ rmlogs $log
 for i in $root/trees/*; do
     ngrams=`basename $i .csv`
     job=`mktemp`
-    pseudoterms=$root/pseudoterms/$ngrams
+    pseudoterms=$root/pseudoterms
 
     echo -n "$ngrams "
     cat <<EOF > $job
