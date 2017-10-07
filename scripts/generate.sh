@@ -53,8 +53,6 @@ EOF
     sbatch \
 	--mem=${memory}G \
 	--time=$duration \
-	--mail-type=END,FAIL \
-	--mail-user=jsw7@nyu.edu \
 	--nodes=1 \
 	--cpus-per-task=$workers \
 	--workdir=`pwd` \
