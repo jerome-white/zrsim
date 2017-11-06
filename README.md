@@ -1,7 +1,7 @@
 # Zero Resource Term Discovery Simulator
 
 Given a collection of documents, in which some of those documents are
-queries, produces "term" output similar to what [ZRTools]() might if
+queries, produces "term" output similar to what [ZRTools](https://github.com/arenjansen/ZRTools) might if
 the collection were audio.
 
 ## Run
@@ -20,7 +20,7 @@ the collection were audio.
 1. N-gram extraction
 
    Text documents must first be parsed into variable length n-grams;
-   [src/exec/NGramExtractor.java]() manages this process. It produces
+   [src/exec/NGramExtractor.java](src/exec/NGramExtractor.java) manages this process. It produces
    a single CSV file with the following format:
 
    > document,n-gram,offset
@@ -55,7 +55,7 @@ the collection were audio.
    Terms are generated based on the CSV file previously produced. To
    do so, equivalent n-grams are grouped and given a "name." Documents
    are then reproduced using these names;
-   [src/exec/TermGenerator.java]() manages this process. For every
+   [src/exec/TermGenerator.java](src/exec/TermGenerator.java) manages this process. For every
    document in the original collection, a corresponding CSV document
    is produced:
 
@@ -117,5 +117,5 @@ assumes may not be appropriate for your environment.
 
    Reproduction: The results in this publication were produced using
    an early Python-based version of the simulator. That version can
-   found in a [separate repository]; and in particular its [CIKM
+   found in a [separate repository](https://github.com/jerome-white/pyzrt); and in particular its [CIKM
    release]().
