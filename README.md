@@ -15,7 +15,7 @@ the collection were audio.
    $> ant clean compile
    ```
 
-   See build.xml for details.
+   See [build.xml](build.xml) for details.
 
 1. N-gram extraction
 
