@@ -118,7 +118,9 @@ assumes may not be appropriate for your environment.
    }
    </pre>
 
-   Reproduction: The results in this publication were produced using
-   an early Python-based version of the simulator. That version can
-   found in a [separate repository](https://github.com/jerome-white/pyzrt); and in particular its [CIKM
-   release]().
+   The results in this publication were produced using an early
+   version of the simulator. That version can be found in a [separate
+   repository](https://github.com/jerome-white/pyzrt); please see its
+   [CIKM
+   release](https://github.com/jerome-white/pyzrt/releases/tag/CIKM2017-final)
+   when reproducing results.
