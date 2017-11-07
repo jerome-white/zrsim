@@ -104,7 +104,7 @@ assumes may not be appropriate for your environment.
 
 ## References
 
-### <a name="cikm2017"></a> *Simulating Zero-Resource Spoken Term Discovery* ([:arrow_upper_right:](https://doi.org/10.1145/3132847.3133160))
+### <a name="cikm2017"></a> *Simulating Zero-Resource Spoken Term Discovery* [:arrow_upper_right:](https://doi.org/10.1145/3132847.3133160)
 
 <pre>
 @inproceedings{white-cikm-2017,
