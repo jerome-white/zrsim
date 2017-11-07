@@ -112,7 +112,7 @@ assumes may not be appropriate for your environment.
     title = {Simulating Zero-Resource Spoken Term Discovery},
     booktitle = {International Conference on Information and Knowledge Management},
     year = {2017},
-    pages = {},
+    pages = {2371--2374},
     publisher = {ACM},
     doi = {10.1145/3132847.3133160},
    }
