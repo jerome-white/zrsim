@@ -104,27 +104,25 @@ assumes may not be appropriate for your environment.
 
 ## References
 
-1. "[Simulating Zero-Resource Spoken Term
-   Discovery](https://doi.org/10.1145/3132847.3133160)"
+<a href="cikm2017"></a>### "[Simulating Zero-Resource Spoken Term Discovery](https://doi.org/10.1145/3132847.3133160)"
 
-   <pre>
-   @inproceedings{white-cikm-2017,
-    author = {White, Jerome and Oard, Douglas~W.},
-    title = {Simulating Zero-Resource Spoken Term Discovery},
-    booktitle = {International Conference on Information and Knowledge Management},
-    year = {2017},
-    pages = {2371--2374},
-    publisher = {ACM},
-    doi = {10.1145/3132847.3133160},
-   }
-   </pre>
+<pre>
+@inproceedings{white-cikm-2017,
+ author = {White, Jerome and Oard, Douglas~W.},
+ title = {Simulating Zero-Resource Spoken Term Discovery},
+ booktitle = {International Conference on Information and Knowledge Management},
+ year = {2017},
+ pages = {2371--2374},
+ publisher = {ACM},
+ doi = {10.1145/3132847.3133160},
+}
+</pre>
 
-   Notes:
-   
-   o This is the most appropriate reference for scientific work that
-     uses, or otherwise mentions, this simulator.
+Notes:
 
-   o An [earlier
-     version](https://github.com/jerome-white/pyzrt/releases/tag/CIKM2017-final)
-     of the simulator---now hosted in a different repository---should
-     be used when reproducing the results from this work.
+o This is the most appropriate reference for scientific work that
+  uses, or otherwise mentions, this simulator.
+
+o To reproduce the results in this paper, an [earlier
+  version](https://github.com/jerome-white/pyzrt/releases/tag/CIKM2017-final)
+  of the simulator should be used.
