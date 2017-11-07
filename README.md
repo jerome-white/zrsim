@@ -3,7 +3,8 @@
 Given a collection of documents, in which some of those documents are
 queries, produces "term" output similar to what
 [ZRTools](https://github.com/arenjansen/ZRTools) might if the
-collection were audio.
+collection were audio. See our [2017 CIKM paper](#cikm2017) for more
+details.
 
 ## Execution
 
@@ -118,9 +119,12 @@ assumes may not be appropriate for your environment.
    }
    </pre>
 
-   The results in this publication were produced using an early
-   version of the simulator. That version can be found in a [separate
-   repository](https://github.com/jerome-white/pyzrt); please see its
-   [CIKM
-   release](https://github.com/jerome-white/pyzrt/releases/tag/CIKM2017-final)
-   when reproducing results.
+   Notes:
+   
+   o This is the most appropriate reference for scientific work that
+     uses, or otherwise mentions, this simulator.
+
+   o An [earlier
+     version](https://github.com/jerome-white/pyzrt/releases/tag/CIKM2017-final)
+     of the simulator---now hosted in a different repository---should
+     be used when reproducing the results from this work.
