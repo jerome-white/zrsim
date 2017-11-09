@@ -120,9 +120,9 @@ assumes may not be appropriate for your environment.
 
 Notes:
 
-o This is the most appropriate reference for scientific work that
+* This is the most appropriate reference for scientific work that
   uses, or otherwise mentions, this simulator.
 
-o To reproduce the results in this paper, an [earlier
+* To reproduce the results in this paper, an [earlier
   version](https://github.com/jerome-white/pyzrt/releases/tag/CIKM2017-final)
   of the simulator should be used.
