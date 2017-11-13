@@ -10,93 +10,94 @@ import java.util.LinkedList;
 import java.util.Collections;
 import java.util.function.Consumer;
 
-import util.entity.Token;
+import util.entity.Posting;
 
 public class ForwardIndex {
-    private class PartialToken {
+    private class PartialPosting {
         private final int offset;
         private final String ngram;
 
-        public PartialToken(Token token) {
-            offset = token.getOffset();
-            ngram = token.getNgram();
+        public PartialPosting(Posting posting) {
+            offset = posting.getOffset();
+            ngram = posting.getNgram();
         }
 
-        public Token toToken(String document) {
-            return new Token(document, ngram, offset);
+        public Posting toPosting(String document) {
+            return new Posting(document, ngram, offset);
         }
     }
 
-    private class TokenIterator implements Iterable<Token>, Iterator<Token> {
+    private class PostingIterator implements Iterable<Posting>,
+                                             Iterator<Posting> {
         private String currentDoc;
-        private Iterator<PartialToken> tokenIterator;
+        private Iterator<PartialPosting> postingIterator;
         private Iterator<String> documentIterator;
 
-        public TokenIterator() {
+        public PostingIterator() {
             documentIterator = index.keySet().iterator();
             tee();
         }
 
-        public Iterator<Token> iterator() {
+        public Iterator<Posting> iterator() {
             return this;
         }
 
         private void tee() {
             if (documentIterator.hasNext()) {
                 currentDoc = documentIterator.next();
-                tokenIterator = index.get(currentDoc).iterator();
+                postingIterator = index.get(currentDoc).iterator();
             }
             else {
-                tokenIterator = Collections.emptyIterator();
+                postingIterator = Collections.emptyIterator();
             }
         }
 
         public boolean hasNext() {
-            return tokenIterator.hasNext();
+            return postingIterator.hasNext();
         }
 
-        public Token next() {
-            Token token = tokenIterator.next().toToken(currentDoc);
+        public Posting next() {
+            Posting posting = postingIterator.next().toPosting(currentDoc);
 
             if (!hasNext()) {
                 tee();
             }
 
-            return token;
+            return posting;
         }
     }
 
-    private Map<String, List<PartialToken>> index;
+    private Map<String, List<PartialPosting>> index;
 
     public ForwardIndex() {
-        index = new HashMap<String, List<PartialToken>>();
+        index = new HashMap<String, List<PartialPosting>>();
     }
 
-    private List<PartialToken> seed(String document) {
+    private List<PartialPosting> seed(String document) {
         return index
-            .computeIfAbsent(document, k -> new LinkedList<PartialToken>());
+            .computeIfAbsent(document, k -> new LinkedList<PartialPosting>());
     }
 
-    public void add(String document, Token token) {
-        seed(document).add(new PartialToken(token));
+    public void add(String document, Posting posting) {
+        seed(document).add(new PartialPosting(posting));
     }
 
-    public void add(Token token) {
-        add(token.getDocument(), token);
+    public void add(Posting posting) {
+        add(posting.getDocument(), posting);
     }
 
     public void fold(ForwardIndex index) {
         index.index.forEach((k, v) -> seed(k).addAll(v));
     }
 
-    public void forEachToken(String document, Consumer<Token> consumer) {
-        for (PartialToken partial : index.get(document)) {
-            consumer.accept(partial.toToken(document));
+    public void forEachPosting(String document, Consumer<Posting> consumer) {
+        for (PartialPosting partial : index.get(document)) {
+            consumer.accept(partial.toPosting(document));
         }
     }
 
-    public Iterable<Token> tokenIterator() {
-        return new TokenIterator();
+    public Iterable<Posting> postingIterator() {
+        return new PostingIterator();
     }
 
     public Set<String> documents() {

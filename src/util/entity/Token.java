@@ -34,7 +34,7 @@ public class Token {
     }
 
     public String getFields() {
-        StringJoiner joiner = new StringJoiner(Entity.DELIMITER);
+        StringJoiner joiner = new StringJoiner(Token.DELIMITER);
 
         for (String field : fields) {
             joiner.add(field);
@@ -44,7 +44,7 @@ public class Token {
     }
 
     public String toString() {
-        return new StringJoiner(Entity.DELIMITER)
+        return new StringJoiner(Token.DELIMITER)
             .add(key)
             .add(ngram)
             .add(String.valueOf(offset))
