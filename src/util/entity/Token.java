@@ -9,8 +9,8 @@ public class Token {
     public static final String DELIMITER = ",";
 
     private final int offset;
-    private final String key;
     private final String ngram;
+    protected final String key;
     protected final List<String> fields;
 
     protected Token(String name, String key, String ngram, int offset) {
@@ -23,10 +23,6 @@ public class Token {
 
     public String getNgram() {
         return ngram;
-    }
-
-    protected String getKey() {
-        return key;
     }
 
     public int getOffset() {

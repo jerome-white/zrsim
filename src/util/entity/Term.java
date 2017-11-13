@@ -10,6 +10,6 @@ public class Term extends Token {
     }
 
     public String getTerm() {
-        return getKey();
+        return key;
     }
 }

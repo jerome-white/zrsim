@@ -14,6 +14,6 @@ public class Posting extends Token {
     }
 
     public String getDocument() {
-        return getKey();
+        return key;
     }
 }
