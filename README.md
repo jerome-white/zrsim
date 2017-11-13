@@ -61,13 +61,12 @@ are then reproduced using these names;
 process. For every document in the original collection, a
 corresponding CSV document is produced:
 
-> term,n-gram,start,end
+> term,n-gram,start
 
 where *term* is the name of that n-gram group. Columns n-gram and
 start correspond to n-gram and offset from in the extraction
 output. Where start denotes the start of the n-gram within the
-document, end denotes its end. While redundant, it is maintained
-for compatibility with older processing tools.
+document.
 
 Again, the term generator can be run directly from the command
 line:

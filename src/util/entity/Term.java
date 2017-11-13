@@ -1,29 +1,15 @@
 package util.entity;
 
-import java.util.StringJoiner;
-
 public class Term extends Token {
-    private final int end;
-
-    public Term(Token token, String name) {
-        super(name, token.getNgram(), token.getOffset());
-
-        end = getOffset() + getNgram().length();
-
-        fields.set(0, "term");
-        fields.add("end");
+    public Term(String term, String ngram, int offset) {
+        super("term", term, ngram, offset);
     }
 
-    public Term(Token token) {
-        this(token, token.getNgram());
+    public Term(String term, Posting posting) {
+        this(term, posting.getNgram(), posting.getOffset());
     }
 
-    protected StringJoiner compose() {
-        return super.compose()
-            .add(String.valueOf(end));
-    }
-
-    public String toString() {
-        return compose().toString();
+    public String getTerm() {
+        return getName();
     }
 }
