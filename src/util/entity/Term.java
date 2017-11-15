@@ -1,15 +1,15 @@
 package util.entity;
 
 public class Term extends Token {
-    public Term(String term, String ngram, int offset) {
-        super("term", term, ngram, offset);
+    public Term(String name, String ngram, int offset) {
+        super("name", name, ngram, offset);
     }
 
-    public Term(String term, Posting posting) {
-        this(term, posting.getNgram(), posting.getOffset());
+    public Term(String name, Posting posting) {
+        this(name, posting.getNgram(), posting.getOffset());
     }
 
-    public String getTerm() {
+    public String getName() {
         return key;
     }
 }
