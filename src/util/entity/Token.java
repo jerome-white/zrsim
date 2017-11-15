@@ -18,7 +18,9 @@ public class Token {
         this.ngram = ngram;
         this.offset = offset;
 
-        fields = new LinkedList<String>(Arrays.asList(name, "ngram", "start"));
+        fields = new LinkedList<String>(Arrays.asList(name,
+                                                      "ngram",
+                                                      "position"));
     }
 
     public String getNgram() {
