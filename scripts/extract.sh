@@ -49,7 +49,7 @@ for i in `seq $starting_ngram $max_ngram`; do
 
 tar \
     --extract \
-    --bzip \
+    --use-compress-prog=pbzip2 \
     --directory=\$SLURM_JOBTMP \
     --file=$SCRATCH/zrt/corpus.tar.bz
 
