@@ -1,3 +1,7 @@
+#
+# Produce term length distribution
+#
+
 import csv
 import sys
 import collections

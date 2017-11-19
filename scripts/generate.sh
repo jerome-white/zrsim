@@ -13,10 +13,26 @@ duration=6:00:00
 while getopts "w:m:t:d:h" OPTION; do
     case $OPTION in
 	w) workers=$OPTARG ;;
-	m) memory=$OPTARG ;;
+	r) memory=$OPTARG ;;
 	t) duration=$OPTARG ;;
 	d) root=$OPTARG ;; # $SCRATCH/zrt/wsj/2017_0719_184233
         h)
+	    cat <<EOF
+A convenience script for running the term generator within a
+SLURM-based cluster.
+
+Usage: $0 [options]
+  -w Number of CPU cores to make available to the JVM.
+
+  -r Amount of memory to make available to the JVM.
+
+  -t Amount of time the JVM is allowed to run.
+
+  -d Directory to which the output should go.
+
+Options -r and -t should be specified in a format that SLURM can
+understand. See the sbatch manpage for details.
+EOF
             exit
             ;;
         *) exit 1 ;;
@@ -29,7 +45,7 @@ rmlogs $log
 for i in $root/trees/*; do
     ngrams=`basename $i .csv`
     job=`mktemp`
-    pseudoterms=$root/pseudoterms/$ngrams
+    pseudoterms=$root/pseudoterms
 
     echo -n "$ngrams "
     cat <<EOF > $job
@@ -53,8 +69,6 @@ EOF
     sbatch \
 	--mem=${memory}G \
 	--time=$duration \
-	--mail-type=END,FAIL \
-	--mail-user=jsw7@nyu.edu \
 	--nodes=1 \
 	--cpus-per-task=$workers \
 	--workdir=`pwd` \

@@ -1,33 +1,51 @@
 package util.entity;
 
+import java.util.List;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.StringJoiner;
 
-public class Token extends Entity {
+public class Token {
+    public static final String DELIMITER = ",";
+
     private final int offset;
+    private final String ngram;
+    protected final String key;
+    protected final List<String> fields;
 
-    public Token(String document, String ngram, int offset) {
-        super(document, ngram);
-
+    protected Token(String name, String key, String ngram, int offset) {
+        this.key = key;
+        this.ngram = ngram;
         this.offset = offset;
-        fields.add("start");
+
+        fields = new LinkedList<String>(Arrays.asList(name,
+                                                      "ngram",
+                                                      "position"));
+    }
+
+    public String getNgram() {
+        return ngram;
     }
 
     public int getOffset() {
         return offset;
     }
 
-    protected StringJoiner compose() {
-        return super.compose()
-            .add(String.valueOf(offset));
+    public String getFields() {
+        StringJoiner joiner = new StringJoiner(Token.DELIMITER);
+
+        for (String field : fields) {
+            joiner.add(field);
+        }
+
+        return joiner.toString();
     }
 
     public String toString() {
-        return compose().toString();
-    }
-
-    public static Token fromString(String string) {
-        String[] parts = string.split(Entity.DELIMITER);
-
-        return new Token(parts[0], parts[1], Integer.valueOf(parts[2]));
+        return new StringJoiner(Token.DELIMITER)
+            .add(key)
+            .add(ngram)
+            .add(String.valueOf(offset))
+            .toString();
     }
 }

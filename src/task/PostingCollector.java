@@ -10,16 +10,16 @@ import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
 import util.LogAgent;
-import util.entity.Token;
+import util.entity.Posting;
 import index.ForwardIndex;
 
-public class TokenCollector implements Callable<ForwardIndex> {
+public class PostingCollector implements Callable<ForwardIndex> {
     private int focus;
     private int block;
 
     private Path path;
 
-    public TokenCollector(Path path, int focus, int block) {
+    public PostingCollector(Path path, int focus, int block) {
         this.path = path;
         this.focus = focus;
         this.block = block;
@@ -41,7 +41,8 @@ public class TokenCollector implements Callable<ForwardIndex> {
                 }
 
                 if (reader.getLineNumber() - 1 == interest) {
-                    index.add(Token.fromString(line));
+                    Posting posting = new Posting(line);
+                    index.add(posting);
                     interest += block;
                 }
             }
