@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 import util.LogAgent;
 import util.namer.TermNamer;
 import util.entity.Term;
-import util.entity.Token;
+import util.entity.Posting;
 import index.ForwardIndex;
 
 public class TermCreator implements Callable<String> {
@@ -59,9 +59,9 @@ public class TermCreator implements Callable<String> {
         LogAgent.LOGGER.info(document);
 
         TermJoiner termJoiner = new TermJoiner();
-        index.forEachToken(document, t -> {
-                String name = termNamer.get(t.getNgram());
-                termJoiner.push(new Term(t, name));
+        index.forEachPosting(document, p -> {
+                String name = termNamer.get(p.getNgram());
+                termJoiner.push(new Term(name, p));
             });
 
         Path output = root.resolve(document);

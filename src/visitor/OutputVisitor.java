@@ -3,7 +3,7 @@ package visitor;
 import java.io.PrintStream;
 
 import index.SuffixTree;
-import util.entity.Token;
+import util.entity.Posting;
 
 public class OutputVisitor implements SuffixTreeVisitor {
     private int appearances;
@@ -40,10 +40,10 @@ public class OutputVisitor implements SuffixTreeVisitor {
     public void visit(SuffixTree node) {
         if (node.appearances() >= appearances &&
             (redundants || !redundants && !node.isRedundant())) {
-            node.forEachLocation((t, u) -> {
-                    for (Integer offset : u) {
-                        Token token = new Token(t, ngram, offset);
-                        printStream.println(token);
+            node.forEachLocation((document, offsets) -> {
+                    for (Integer o : offsets) {
+                        Posting posting = new Posting(document, ngram, o);
+                        printStream.println(posting);
                     }
                 });
         }

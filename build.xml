@@ -52,17 +52,4 @@
       </batchtest>
     </junit>
   </target>
-
-  <target name="run" depends="compile">
-    <java fork="true" classname="exec.NGramExtractor">
-      <jvmarg value="-enableassertions"/>
-      <classpath refid="default_classpath"/>
-      <arg value="${corpus}"/>
-      <arg value="${min_ngram}"/>
-      <arg value="${max_ngram}"/>
-      <arg value="${output}"/>
-      <arg value="${workers}"/>
-      <arg value="${tmpdir}"/>
-    </java>
-  </target>
 </project>

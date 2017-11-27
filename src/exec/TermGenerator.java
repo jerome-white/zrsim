@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.lang.reflect.UndeclaredThrowableException;
 
 import task.TermCreator;
-import task.TokenCollector;
+import task.PostingCollector;
 import util.LogAgent;
 import util.namer.TermNamer;
 import util.namer.PseudoTermNamer;
@@ -38,7 +38,7 @@ public class TermGenerator {
         LogAgent.LOGGER.info("Term collection");
 
         for (int i = 0; i < workers; i++) {
-            indexTasks.add(new TokenCollector(posting, i, workers));
+            indexTasks.add(new PostingCollector(posting, i, workers));
         }
 
         ForwardIndex index = null;
@@ -71,7 +71,7 @@ public class TermGenerator {
          */
         LogAgent.LOGGER.info("Term database");
 
-        TermNamer termNamer = new PseudoTermNamer(index.tokenIterator());
+        TermNamer termNamer = new PseudoTermNamer(index.postingIterator());
 
         /*
          * Save
