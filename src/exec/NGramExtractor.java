@@ -18,6 +18,8 @@ import java.util.concurrent.ExecutorService;
 
 import util.LogAgent;
 import util.StreamStorageThreadFactory;
+import util.keeper.GateKeeper;
+import util.keeper.SentenceGateKeeper;
 import task.DocumentParser;
 import task.container.TaskContainer;
 import task.container.FragmentContainer;
@@ -55,8 +57,12 @@ public class NGramExtractor {
         List<Callable<String>> tasks = new LinkedList<Callable<String>>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(corpus)) {
             for (Path file : stream) {
-                DocumentParser parser =
-                    new DocumentParser(suffixTree, file, min_ngram, max_ngram);
+		GateKeeper gateKeeper = new SentenceGateKeeper();
+                DocumentParser parser = new DocumentParser(suffixTree,
+							   file,
+							   min_ngram,
+							   max_ngram,
+							   gateKeeper);
                 tasks.add(parser);
             }
         }
