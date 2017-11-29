@@ -45,7 +45,6 @@ public class NGramExtractor {
         if (workers > procs) {
             workers = procs;
         }
-        ExecutorService executors = Executors.newFixedThreadPool(workers);
 
         SuffixTree suffixTree = new SuffixTree(min_ngram);
 
@@ -53,6 +52,9 @@ public class NGramExtractor {
          *
          */
         LogAgent.LOGGER.info("Adding terms");
+
+	int threads = Math.round(workers / 2);
+        ExecutorService executors = Executors.newFixedThreadPool(threads);
 
         List<Callable<String>> tasks = new LinkedList<Callable<String>>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(corpus)) {
@@ -77,10 +79,14 @@ public class NGramExtractor {
             throw new UndeclaredThrowableException(ex);
         }
 
+        executors.shutdown();
+
         /*
          *
          */
         LogAgent.LOGGER.info("Term selection");
+
+        executors = Executors.newFixedThreadPool(workers);
 
         TaskContainer container = new SelectionContainer(suffixTree);
         suffixTree.forEachChild(container);
@@ -111,6 +117,8 @@ public class NGramExtractor {
             throw new UndeclaredThrowableException(ex);
         }
 
+        executors.shutdown();
+
         /*
          *
          */
@@ -132,8 +140,6 @@ public class NGramExtractor {
         catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
-
-        executors.shutdown();
 
         LogAgent.LOGGER.info("Complete");
     }
