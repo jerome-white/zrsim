@@ -64,7 +64,7 @@ public class DocumentParser implements Callable<String> {
                     break;
                 }
 
-                String ngram = new String(buffer);
+                String ngram = String.valueOf(buffer).substring(0, read);
                 try {
                     ngram = transformer.transform(ngram);
                     collection.add(ngram, document, position);

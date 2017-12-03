@@ -62,11 +62,11 @@ public class SuffixTree implements NgramCollection {
         visitor.visit(this);
     }
 
-    public void add(CharSequence ngram, String document, int offset) {
+    public void add(String ngram, String document, int offset) {
         if (ngram.length() >= key_length) {
-            CharSequence head = ngram.subSequence(0, key_length);
+            String head = ngram.substring(0, key_length);
 
-            SuffixTree child = children.computeIfAbsent(head.toString(),
+            SuffixTree child = children.computeIfAbsent(head,
                                                         k -> new SuffixTree());
             child.locations.compute(document, (k, v) -> {
                     if (v == null) {
@@ -77,7 +77,7 @@ public class SuffixTree implements NgramCollection {
                     return v;
                 });
 
-            CharSequence tail = ngram.subSequence(key_length, ngram.length());
+            String tail = ngram.substring(key_length);
             child.add(tail, document, offset);
         }
     }
