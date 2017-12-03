@@ -1,6 +1,6 @@
 package util;
 
-public interface NGramCollection {
+public interface NgramCollection {
     /**
      * @param ngram n-gram to be added
      * @param document Document that contains this n-gram

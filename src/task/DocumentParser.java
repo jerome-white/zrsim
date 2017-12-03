@@ -12,7 +12,7 @@ import java.nio.channels.FileChannel;
 import java.util.concurrent.Callable;
 
 import util.LogAgent;
-import util.NGramCollection;
+import util.NgramCollection;
 import util.keeper.GateKeeper;
 import util.transform.NgramTransformer;
 import util.transform.IdentityTransformer;
@@ -22,10 +22,10 @@ public class DocumentParser implements Callable<String> {
     private int max;
 
     private Path path;
-    private NGramCollection collection;
+    private NgramCollection collection;
     private NgramTransformer transformer;
 
-    public DocumentParser(NGramCollection collection,
+    public DocumentParser(NgramCollection collection,
                           Path path,
                           int min,
                           int max,
@@ -37,14 +37,14 @@ public class DocumentParser implements Callable<String> {
         this.transformer = transformer;
     }
 
-    public DocumentParser(NGramCollection collection,
+    public DocumentParser(NgramCollection collection,
                           Path path,
                           int min,
                           int max) {
         this(collection, path, min, max, new IdentityTransformer());
     }
 
-    public DocumentParser(NGramCollection collection, Path path, int n) {
+    public DocumentParser(NgramCollection collection, Path path, int n) {
         this(collection, path, n, n);
     }
 

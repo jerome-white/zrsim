@@ -9,10 +9,10 @@ import java.util.function.BiConsumer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import util.NGramCollection;
+import util.NgramCollection;
 import visitor.SuffixTreeVisitor;
 
-public class SuffixTree implements NGramCollection {
+public class SuffixTree implements NgramCollection {
     private final int key_length;
 
     private AtomicBoolean redundant;
