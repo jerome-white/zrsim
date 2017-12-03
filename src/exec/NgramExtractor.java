@@ -26,7 +26,7 @@ import task.container.FragmentContainer;
 import task.container.SelectionContainer;
 import index.SuffixTree;
 
-public class NGramExtractor {
+public class NgramExtractor {
     private int workers;
     private int min_ngram;
 
