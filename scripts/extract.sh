@@ -82,7 +82,7 @@ tar \
     --directory=\$SLURM_JOBTMP \
     --file=$SCRATCH/zrt/corpus.tar.bz
 
-java `jargs $memory $workers` exec.NGramExtractor \
+java `jargs $memory $workers` exec.NgramExtractor \
     \$SLURM_JOBTMP/corpus $min_ngram $i $output $workers $BEEGFS
 
 chmod 444 $output
