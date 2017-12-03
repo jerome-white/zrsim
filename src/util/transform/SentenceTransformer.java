@@ -1,6 +1,6 @@
 package util.transform;
 
-public abstract class SentenceTransformer extends TransformDecorator {
+public class SentenceTransformer extends TransformDecorator {
     public SentenceTransformer(NgramTransformer transformer) {
         super(transformer);
     }
