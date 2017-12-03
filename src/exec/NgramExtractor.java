@@ -134,7 +134,7 @@ public class NgramExtractor {
     }
 
     public static void main(String[] args) {
-        LogAgent.LOGGER.setLevel(Level.INFO);
+        LogAgent.setLevel(Level.ALL);
 
         /*
          *
