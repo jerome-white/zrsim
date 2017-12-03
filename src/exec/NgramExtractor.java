@@ -32,7 +32,7 @@ public class NgramExtractor {
 
     private SuffixTree suffixTree;
 
-    public NGramExtractor(int workers, int min_ngram) {
+    public NgramExtractor(int workers, int min_ngram) {
         this.workers = workers;
         this.min_ngram = min_ngram;
 
@@ -153,7 +153,7 @@ public class NgramExtractor {
             workers = procs;
         }
 
-        NGramExtractor extractor = new NGramExtractor(workers, min_ngram);
+        NgramExtractor extractor = new NgramExtractor(workers, min_ngram);
 
         /*
          *
