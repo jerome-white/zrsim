@@ -8,7 +8,7 @@ min_ngram=4
 memory=480
 duration=6:00:00
 
-while getopts "n:m:s:w:r:d:t:h" OPTION; do
+while getopts "n:m:s:w:r:d:t:c:h" OPTION; do
     case $OPTION in
 	n) min_ngram=$OPTARG ;;
 	m) max_ngram=$OPTARG ;;
@@ -16,7 +16,8 @@ while getopts "n:m:s:w:r:d:t:h" OPTION; do
 	w) workers=$OPTARG ;;
 	r) memory=$OPTARG ;;
 	t) duration=$OPTARG ;;
-	d) root=$OPTARG ;; # $SCRATCH/zrt/wsj/2017_0719_184233
+	c) corpus=$OPTARG ;;
+	d) root=$OPTARG ;;
         h)
 	    cat <<EOF
 A convenience script for running the n-gram extractor within a
@@ -44,6 +45,8 @@ Usage: $0 [options]
 
   -d Directory to which the output should go.
 
+  -c Directory containing corpus (both documents and queries)
+
 Options -r and -t should be specified in a format that SLURM can
 understand. See the sbatch manpage for details.
 EOF
@@ -60,9 +63,6 @@ if [ ! $starting_ngram ]; then
     starting_ngram=$min_ngram
 fi
 
-log=simulate.jobs
-rmlogs $log
-
 mkdir --parents $root/trees
 
 for i in `seq $starting_ngram $max_ngram`; do
@@ -73,17 +73,22 @@ for i in `seq $starting_ngram $max_ngram`; do
     echo -n "$i "
     job=`mktemp`
 
+    # if [ $i -lt 9 ]; then
+    # 	memory=500
+    # 	workers=20
+    # elif [ $i -lt 15 ]; then
+    # 	memory=750
+    # 	workers=24
+    # else
+    # 	memory=1500
+    # 	workers=24
+    # fi
+
     cat <<EOF > $job
 #!/bin/bash
 
-tar \
-    --extract \
-    --use-compress-prog=pbzip2 \
-    --directory=\$SLURM_JOBTMP \
-    --file=$SCRATCH/zrt/corpus.tar.bz
-
-java `jargs $memory $workers` exec.NGramExtractor \
-    \$SLURM_JOBTMP/corpus $min_ngram $i $output $workers $BEEGFS
+java `jargs $memory $workers` exec.NgramExtractor \
+    $corpus $min_ngram $i $output $workers $BEEGFS
 
 chmod 444 $output
 EOF
@@ -91,11 +96,9 @@ EOF
     sbatch \
 	--mem=${memory}G \
 	--time=$duration \
-	--mail-type=END,FAIL \
-	--mail-user=jsw7@nyu.edu \
 	--nodes=1 \
 	--cpus-per-task=$workers \
 	--workdir=`pwd` \
 	--job-name=zrsim-$i \
 	$job
-done > $log
+done
