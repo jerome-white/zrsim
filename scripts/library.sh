@@ -5,7 +5,7 @@ mload() {
     module try-load apache-ant/1.9.8
     module try-load pbzip2/intel/1.1.13
     
-    ant clean compile || exit 1
+    # ant clean compile || exit 1
 }
 
 rmlogs() {

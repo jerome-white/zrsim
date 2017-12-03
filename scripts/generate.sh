@@ -39,31 +39,36 @@ EOF
     esac
 done
 
-log=generate.jobs
-rmlogs $log
+# log=generate.jobs
+# rmlogs $log
+sandbox=`mktemp --directory --tmpdir=$BEEGFS`
 
 for i in $root/trees/*; do
-    ngrams=`basename $i .csv`
-    job=`mktemp`
-    pseudoterms=$root/pseudoterms
+    ngrams=`basename --suffix=.csv $i`
 
-    echo -n "$ngrams "
+    output=$sandbox/$ngrams
+    pseudoterms=$root/pseudoterms
+    for j in $pseudoterms $output; do
+	mkdir --parents $j
+    done
+
+    job=`mktemp`
+
+    echo -n "$ngrams $job "
     cat <<EOF > $job
 #!/bin/bash
 
-output=\$SLURM_JOBTMP/$ngrams
-
-mkdir --parents \$output
 java `jargs $memory $workers` exec.TermGenerator \
-    $i $workers \$output
+    $i $workers $output
 
-mkdir --parents $pseudoterms
 tar \
     --create \
     --use-compress-prog=pbzip2 \
     --file=$pseudoterms/$ngrams.tar.bz \
-    --directory=\$SLURM_JOBTMP \
+    --directory=$sandbox \
     $ngrams
+
+rm --recursive --force $output
 EOF
 
     sbatch \
@@ -74,4 +79,4 @@ EOF
 	--workdir=`pwd` \
 	--job-name=ptgen-$ngrams \
 	$job
-done > $log
+done

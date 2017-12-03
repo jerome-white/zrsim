@@ -18,53 +18,40 @@ import java.util.concurrent.ExecutorService;
 
 import util.LogAgent;
 import util.StreamStorageThreadFactory;
-import util.keeper.GateKeeper;
-import util.keeper.SentenceGateKeeper;
+import util.transform.NgramTransformer;
+import util.transform.IdentityTransformer;
 import task.DocumentParser;
 import task.container.TaskContainer;
 import task.container.FragmentContainer;
 import task.container.SelectionContainer;
 import index.SuffixTree;
 
-public class NGramExtractor {
-    public static void main(String[] args) {
-        /*
-         *
-         */
-        Path corpus = Paths.get(args[0]);
-        int min_ngram = Integer.parseInt(args[1]);
-        int max_ngram = Integer.parseInt(args[2]);
-        Path output = Paths.get(args[3]);
-        int workers = Integer.parseInt(args[4]);
-        Path tmpdir = Paths.get(args[5]);
+public class NgramExtractor {
+    private int workers;
+    private int min_ngram;
 
-        LogAgent.LOGGER.setLevel(Level.INFO);
-        LogAgent.LOGGER.info("Begin: " + min_ngram + " -- " + max_ngram);
+    private SuffixTree suffixTree;
 
-        int procs = Runtime.getRuntime().availableProcessors();
-        if (workers > procs) {
-            workers = procs;
-        }
+    public NgramExtractor(int workers, int min_ngram) {
+        this.workers = workers;
+        this.min_ngram = min_ngram;
 
-        SuffixTree suffixTree = new SuffixTree(min_ngram);
+        suffixTree = new SuffixTree(min_ngram);
+    }
 
-        /*
-         *
-         */
+    public void populate(Path corpus, int max_ngram) {
         LogAgent.LOGGER.info("Adding terms");
 
-	int threads = Math.round(workers / 2);
+        int threads = Math.round(workers / 2);
         ExecutorService executors = Executors.newFixedThreadPool(threads);
 
         List<Callable<String>> tasks = new LinkedList<Callable<String>>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(corpus)) {
             for (Path file : stream) {
-		GateKeeper gateKeeper = new SentenceGateKeeper();
                 DocumentParser parser = new DocumentParser(suffixTree,
-							   file,
-							   min_ngram,
-							   max_ngram,
-							   gateKeeper);
+                                                           file,
+                                                           min_ngram,
+                                                           max_ngram);
                 tasks.add(parser);
             }
         }
@@ -80,13 +67,12 @@ public class NGramExtractor {
         }
 
         executors.shutdown();
+    }
 
-        /*
-         *
-         */
+    public void prune() {
         LogAgent.LOGGER.info("Term selection");
 
-        executors = Executors.newFixedThreadPool(workers);
+        ExecutorService executors = Executors.newFixedThreadPool(workers);
 
         TaskContainer container = new SelectionContainer(suffixTree);
         suffixTree.forEachChild(container);
@@ -98,18 +84,16 @@ public class NGramExtractor {
         }
 
         executors.shutdown();
+    }
 
-        /*
-         *
-         */
+    private void todisk(StreamStorageThreadFactory factory) {
         LogAgent.LOGGER.info("Terms to disk");
 
-        container = new FragmentContainer();
+        TaskContainer container = new FragmentContainer();
         suffixTree.forEachChild(container);
 
-        StreamStorageThreadFactory factory =
-            new StreamStorageThreadFactory(tmpdir);
-        executors = Executors.newFixedThreadPool(workers, factory);
+        ExecutorService executors =
+            Executors.newFixedThreadPool(workers, factory);
         try {
             executors.invokeAll(container.getTasks());
         }
@@ -118,10 +102,9 @@ public class NGramExtractor {
         }
 
         executors.shutdown();
+    }
 
-        /*
-         *
-         */
+    private void consolidate(Path output, StreamStorageThreadFactory factory) {
         LogAgent.LOGGER.info("Disk consolidation");
 
         try (FileChannel dest =
@@ -140,6 +123,44 @@ public class NGramExtractor {
         catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
+    }
+
+    public void dump(Path output, Path tmpdir) {
+        StreamStorageThreadFactory factory =
+            new StreamStorageThreadFactory(tmpdir);
+
+        todisk(factory);
+        consolidate(output, factory);
+    }
+
+    public static void main(String[] args) {
+        LogAgent.setLevel(Level.ALL);
+
+        /*
+         *
+         */
+        Path corpus = Paths.get(args[0]);
+        int min_ngram = Integer.parseInt(args[1]);
+        int max_ngram = Integer.parseInt(args[2]);
+        Path output = Paths.get(args[3]);
+        int workers = Integer.parseInt(args[4]);
+        Path tmpdir = Paths.get(args[5]);
+
+        int procs = Runtime.getRuntime().availableProcessors();
+        if (workers > procs) {
+            workers = procs;
+        }
+
+        NgramExtractor extractor = new NgramExtractor(workers, min_ngram);
+
+        /*
+         *
+         */
+        LogAgent.LOGGER.info("Begin: " + min_ngram + " -- " + max_ngram);
+
+        extractor.populate(corpus, max_ngram);
+        extractor.prune();
+        extractor.dump(output, tmpdir);
 
         LogAgent.LOGGER.info("Complete");
     }

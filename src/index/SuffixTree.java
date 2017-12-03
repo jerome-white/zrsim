@@ -9,10 +9,10 @@ import java.util.function.BiConsumer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import util.NGramCollection;
+import util.NgramCollection;
 import visitor.SuffixTreeVisitor;
 
-public class SuffixTree implements NGramCollection {
+public class SuffixTree implements NgramCollection {
     private final int key_length;
 
     private AtomicBoolean redundant;
@@ -62,20 +62,23 @@ public class SuffixTree implements NGramCollection {
         visitor.visit(this);
     }
 
-    public void add(CharBuffer ngram, String document, int offset) {
-        if (ngram.hasRemaining()) {
-            char[] head = new char[key_length];
-            ngram.get(head, 0, key_length);
-            SuffixTree child = children.computeIfAbsent(String.valueOf(head),
+    public void add(String ngram, String document, int offset) {
+        if (ngram.length() >= key_length) {
+            String head = ngram.substring(0, key_length);
+
+            SuffixTree child = children.computeIfAbsent(head,
                                                         k -> new SuffixTree());
             child.locations.compute(document, (k, v) -> {
                     if (v == null) {
                         v = new TreeSet<Integer>();
                     }
                     v.add(offset);
+
                     return v;
                 });
-            child.add(ngram, document, offset);
+
+            String tail = ngram.substring(key_length);
+            child.add(tail, document, offset);
         }
     }
 
