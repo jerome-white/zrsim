@@ -13,7 +13,6 @@ import java.util.concurrent.Callable;
 
 import util.LogAgent;
 import util.NgramCollection;
-import util.keeper.GateKeeper;
 import util.transform.NgramTransformer;
 import util.transform.IdentityTransformer;
 
