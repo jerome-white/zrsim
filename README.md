@@ -32,7 +32,7 @@ where *offset* is the position within the *document* from where
 as follows:
 
 ```bash
-$> java -classpath bin exec.NGramExtractor 1 2 3 4 5 6
+$> java -classpath bin:lib/commons-codec-1.11.jar exec.NGramExtractor 1 2 3 4 5 6
 ```
 
 where
