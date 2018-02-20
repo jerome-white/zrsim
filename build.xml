@@ -35,7 +35,7 @@
            debug="true">
       <compilerarg value="-Xlint:unchecked"/>
       <compilerarg value="-Xdiags:verbose"/>
-      <exclude name="test/**"/>
+      <!-- <exclude name="test/**"/> -->
     </javac>
   </target>
 
