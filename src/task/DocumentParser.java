@@ -13,7 +13,6 @@ import java.util.concurrent.Callable;
 
 import util.LogAgent;
 import util.NgramCollection;
-import util.keeper.GateKeeper;
 import util.transform.NgramTransformer;
 import util.transform.IdentityTransformer;
 
@@ -53,27 +52,48 @@ public class DocumentParser implements Callable<String> {
         LogAgent.LOGGER.info(document);
 
         try (BufferedReader reader = Files.newBufferedReader(path)) {
-            int position = 0;
-            char[] buffer = new char[max];
+            StringBuffer buffer = new StringBuffer(max);
 
-            while (true) {
+            for (int pos = 0; ; pos++) {
+                /*
+                 * mark the location
+                 */
                 reader.mark(max);
 
-                int read = reader.read(buffer, 0, max);
-                if (read < min) {
+                /*
+                 * read the ngram
+                 */
+                for (int i = 0; i < max; i++) {
+                    int c = reader.read();
+                    if (c < 0) {
+                        break;
+                    }
+                    buffer.append((char)c);
+                }
+                if (buffer.length() < min) {
                     break;
                 }
+                String ngram = buffer.toString();
+                buffer.delete(0, buffer.length());
 
-                String ngram = String.valueOf(buffer).substring(0, read);
+                /*
+                 * transform, advancing the location regardless
+                 */
                 try {
                     ngram = transformer.transform(ngram);
-                    collection.add(ngram, document, position);
                 }
-                catch (IllegalArgumentException ex) {}
+                catch (IllegalArgumentException ex) {
+                    continue;
+                }
+                finally {
+                    reader.reset();
+                    reader.skip(1);
+                }
 
-                reader.reset();
-                reader.skip(1);
-                position++;
+                /*
+                 * add to the tree
+                 */
+                collection.add(ngram, document, pos);
             }
         }
         catch (IOException ex) {

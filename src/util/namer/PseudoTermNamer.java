@@ -1,23 +1,15 @@
 package util.namer;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.lang.Iterable;
 import java.lang.StringBuilder;
-import java.lang.IllegalArgumentException;
 
 import util.entity.Posting;
 
-public class PseudoTermNamer implements TermNamer {
+public class PseudoTermNamer extends IncrementalNamer {
     private String format;
-    private Map<String, Integer> terms;
 
     public PseudoTermNamer(Iterable<Posting> postings) {
-        terms = new HashMap<String, Integer>();
-
-        for (Posting p : postings) {
-            terms.putIfAbsent(p.getNgram(), terms.size());
-        }
+        super(postings);
 
         StringBuilder fmt = new StringBuilder("pt%0");
         format = fmt
@@ -27,10 +19,6 @@ public class PseudoTermNamer implements TermNamer {
     }
 
     public String get(String ngram) {
-        if (!terms.containsKey(ngram)) {
-            throw new IllegalArgumentException();
-        }
-
-        return String.format(format, terms.get(ngram));
+        return String.format(format, super.get(ngram));
     }
 }
