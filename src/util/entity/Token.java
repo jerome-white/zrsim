@@ -48,4 +48,13 @@ public class Token {
             .add(String.valueOf(offset))
             .toString();
     }
+
+    public static List<String> fromString(String string) {
+	int x = string.indexOf(Token.DELIMITER);
+	int y = string.lastIndexOf(Token.DELIMITER);
+
+	return Arrays.asList(string.substring(0, x),
+			     string.substring(x + 1, y),
+			     string.substring(y + 1));
+    }
 }
