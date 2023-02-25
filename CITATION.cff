@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "White"
+  given-names: "Jerome"
+  orcid: "https://orcid.org/0000-0003-4148-8834"
+- family-names: "Oard"
+  given-names: "Douglas"
+title: "Simulating Zero-Resource Spoken Term Discovery"
+doi: 10.1145/3132847.3133160
+year: 2017
+start: 2371
+end: 2374
+publisher: ACM
+booktitle: International Conference on Information and Knowledge Management
